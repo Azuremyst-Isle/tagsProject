@@ -98,6 +98,4 @@ No hardware interaction is required yet. UID values from tags are entered manual
 ---
 
 ## 🤝 Credits
-Francesco, [your cousin], Tony (Mexico)
-
-Contributions and ideas welcome!
+Francesco (Glasgow, Lecce), Tony (Puerto Progreso, Mexico), Enrico (Lecce)
