@@ -7,6 +7,8 @@ function addItem() {
         body: JSON.stringify({
             rfid_tag: document.getElementById('rfid_tag').value,
             name: document.getElementById('name').value,
+            owner_name: document.getElementById('owner_name').value,
+            certification_code: document.getElementById('certification_code').value,
             description: document.getElementById('description').value
         })
     })
@@ -38,6 +40,8 @@ function getItem() {
                     <td>${data.name}</td>
                     <td>${data.description}</td>
                     <td>${data.status}</td>
+                    <td>${data.owner_name}</td>
+                    <td>${data.certification_code}</td>
                     <td>${formattedDate}</td>
                     <td><button class="btn btn-danger" onclick="deleteItem('${data.rfid_tag}')">Delete</button></td>
                 </tr>`;
@@ -60,6 +64,8 @@ function getAllItems() {
                     <td>${item.name}</td>
                     <td>${item.description}</td>
                     <td>${item.status}</td>
+                    <td>${item.owner_name}</td>
+                    <td>${item.certification_code}</td>
                 </tr>`;
                 tableBody.innerHTML += row;
             });

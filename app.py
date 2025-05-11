@@ -16,6 +16,8 @@ class Item(db.Model):
     name = db.Column(db.String(120), nullable=False)
     description = db.Column(db.String(250))
     status = db.Column(db.String(50), default='available')
+    certification_code = db.Column(db.String(50), unique=True, nullable=True)
+    owner_name = db.Column(db.String(120))
     last_updated = db.Column(db.DateTime, default=datetime.utcnow)
 
 @app.route('/items', methods=['POST'])
@@ -24,7 +26,9 @@ def add_item():
     new_item = Item(
         rfid_tag=data['rfid_tag'],
         name=data['name'],
-        description=data.get('description', '')
+        description=data.get('description', ''),
+        owner_name=data.get('owner_name', ''),
+        certification_code=data.get('certification_code', None)
     )
     db.session.add(new_item)
     db.session.commit()
@@ -36,10 +40,12 @@ def get_allitems():
     output = []
     for item in items:
         item_data = {
+            'object_name': item.name,
             'rfid_tag': item.rfid_tag,
-            'name': item.name,
             'description': item.description,
             'status': item.status,
+            'owner_name': item.owner_name,
+            'certification_code': item.certification_code,
             'last_updated': item.last_updated.isoformat()
         }
         output.append(item_data)
@@ -50,10 +56,12 @@ def get_item(rfid_tag):
     item = Item.query.filter_by(rfid_tag=rfid_tag).first()
     if item:
         return jsonify({
+            'object_name': item.name,
             'rfid_tag': item.rfid_tag,
-            'name': item.name,
             'description': item.description,
             'status': item.status,
+            'owner_name': item.owner_name,
+            'certification_code': item.certification_code,
             'last_updated': item.last_updated.isoformat()
         })
     return jsonify({'message': 'Item not found'}), 404
@@ -64,6 +72,8 @@ def update_item(rfid_tag):
     item = Item.query.filter_by(rfid_tag=rfid_tag).first()
     if item:
         item.name = data.get('name', item.name)
+        item.owner_name = data.get('owner_name', item.owner_name)
+        item.certification_code = data.get('certification_code', item.certification_code)
         item.description = data.get('description', item.description)
         item.status = data.get('status', item.status)
         item.last_updated = datetime.utcnow()
