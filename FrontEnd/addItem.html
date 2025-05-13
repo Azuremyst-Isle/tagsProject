@@ -41,8 +41,10 @@
     <div class="container">
         <h1 class="my-4">Add New Item</h1>
         <div class="mb-3">
+            <input type="text" id="name" class="form-control" placeholder="Object's Name">
             <input type="text" id="rfid_tag" class="form-control" placeholder="RFID Tag">
-            <input type="text" id="name" class="form-control" placeholder="Item Name">
+            <input type="text" id="owner_name" class="form-control" placeholder="Owner">
+            <input type="text" id="certification_code" class="form-control" placeholder="Certification code (if available)">
             <input type="text" id="description" class="form-control" placeholder="Description">
             <button class="btn btn-primary mt-2" onclick="addItem()">Add Item</button>
             <button class="btn btn-primary mt-2" onclick="">Clear</button>
