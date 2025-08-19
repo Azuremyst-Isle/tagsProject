@@ -1,0 +1,6 @@
+@RfidApi_HostAddress = http://localhost:5091
+
+GET {{RfidApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
