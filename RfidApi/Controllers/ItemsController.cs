@@ -5,13 +5,14 @@ using RfidApi.Models;
 namespace RfidApi.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("api/[controller]")]
 public class ItemsController : ControllerBase
 {
     private readonly AppDbContext _context;
 
     public ItemsController(AppDbContext context) => _context = context;
 
+    // GET: api/items
     [HttpGet]
     public IActionResult GetAll() => Ok(_context.item.ToList());
 

@@ -1,6 +1,40 @@
 @RfidApi_HostAddress = http://localhost:5000
+@rfidTag = 111
+@rfidTagNew = 123
 
-GET {{RfidApi_HostAddress}}/weatherforecast/
-Accept: application/json
+### Get all items
+GET {{RfidApi_HostAddress}}/api/items
 
-###
+### Get single Item
+GET {{RfidApi_HostAddress}}/api/items/{{rfidTag}}
+
+### Create new Item
+POST {{RfidApi_HostAddress}}/api/items
+Content-Type: application/json
+
+{
+  "rfid_tag": "123",
+  "name": "New Item",
+  "description": "Description for new item",
+  "status": "available",
+  "certification_code": "CERT123",
+  "owner_name": "Owner Name",
+  "last_updated": "2023-01-01T00:00:00Z"
+}
+
+### Update Item
+PUT {{RfidApi_HostAddress}}/api/items/{{rfidTagNew}}
+Content-Type: application/json
+
+{
+  "rfid_tag": "123",
+  "name": "Updated Item",
+  "description": "Updated description",
+  "status": "available",
+  "certification_code": "CERT123",
+  "owner_name": "Owner Name",
+  "last_updated": "2023-01-01T00:00:00Z"
+}
+
+### Delete Item
+DELETE {{RfidApi_HostAddress}}/api/items/{{rfidTagNew}}

@@ -1,4 +1,17 @@
+using RfidApi.Data;
+
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddItemServices(relativePath: "..\\instance");
+builder.Services.AddControllers();
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(
+        "AllowAll",
+        builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()
+    );
+});
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -13,7 +26,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
 app.UseHttpsRedirection();
+
+app.UseCors("AllowAll");
+
+app.MapControllers();
 
 app.Run();
