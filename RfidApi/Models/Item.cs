@@ -7,12 +7,12 @@ public class Item
 {
     public int Id { get; set; }
 
-    public required string RfidTag { get; set; }
+    public required string rfid_tag { get; set; }
 
-    public required string Name { get; set; }
-    public string? Description { get; set; }
-    public string Status { get; set; } = "available";
-    public string? CertificationCode { get; set; } // Optional
-    public required string OwnerName { get; set; }
-    public DateTime LastUpdated { get; set; } = DateTime.UtcNow;
+    public required string name { get; set; }
+    public string? description { get; set; }
+    public string status { get; set; } = "available";
+    public string? certification_code { get; set; } // Optional
+    public string? owner_name { get; set; }
+    public DateTime last_updated { get; set; } = DateTime.UtcNow;
 }
