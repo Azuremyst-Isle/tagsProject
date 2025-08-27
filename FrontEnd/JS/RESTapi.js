@@ -1,4 +1,4 @@
-const apiBase = "http://localhost:5000";
+const apiBase = "https://localhost:5001";
 
 function addItem() {
   fetch(apiBase + "/api/items", {
@@ -21,6 +21,48 @@ function addItem() {
 function getItem() {
   document.getElementById("resultTable").style.visibility = "visible";
   const tag = document.getElementById("search_tag").value;
+  fetch(apiBase + `/api/items/${tag}`)
+    .then((response) => {
+      if (response.status === 404) {
+        return null; // Handle 404 case
+      }
+      return response.json();
+    })
+    .then((data) => {
+      const tableBody = document.getElementById("itemTableBody");
+      tableBody.innerHTML = ""; // Clear previous results
+      if (data) {
+        const formattedDate = new Date(data.last_updated).toLocaleString(
+          "en-GB",
+          {
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+          }
+        );
+        const row = `<tr>
+                    <td>${data.rfid_tag}</td>
+                    <td>${data.name}</td>
+                    <td>${data.description}</td>
+                    <td>${data.status}</td>
+                    <td>${data.owner_name}</td>
+                    <td>${data.certification_code}</td>
+                    <td>${formattedDate}</td>
+                    <td><button class="btn btn-danger" onclick="deleteItem('${data.rfid_tag}')">Delete</button></td>
+                </tr>`;
+        tableBody.innerHTML = row;
+      } else {
+        tableBody.innerHTML = '<tr><td colspan="5">No data found</td></tr>';
+      }
+    });
+}
+
+function getExampleItem() {
+  document.getElementById("resultTable").style.visibility = "visible";
+  const tag = "04:55:70:D2:22:6D:80";
   fetch(apiBase + `/api/items/${tag}`)
     .then((response) => {
       if (response.status === 404) {
