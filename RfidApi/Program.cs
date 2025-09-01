@@ -2,7 +2,7 @@ using RfidApi.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddItemServices(relativePath: "..\\instance");
+builder.Services.AddItemServices(relativePath: "");
 builder.Services.AddControllers();
 
 builder.Services.AddCors(options =>

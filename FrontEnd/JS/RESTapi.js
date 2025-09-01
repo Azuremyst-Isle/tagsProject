@@ -1,4 +1,4 @@
-const apiBase = "https://localhost:5001";
+const apiBase = "https://alfa33333.bsite.net";
 
 function addItem() {
   fetch(apiBase + "/api/items", {
@@ -93,7 +93,6 @@ function getExampleItem() {
                     <td>${data.owner_name}</td>
                     <td>${data.certification_code}</td>
                     <td>${formattedDate}</td>
-                    <td><button class="btn btn-danger" onclick="deleteItem('${data.rfid_tag}')">Delete</button></td>
                 </tr>`;
         tableBody.innerHTML = row;
       } else {
