@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RfidApi.Data;
 using RfidApi.Models;
@@ -13,6 +14,7 @@ public class ItemsController : ControllerBase
     public ItemsController(AppDbContext context) => _context = context;
 
     // GET: api/items
+    [Authorize]
     [HttpGet]
     public IActionResult GetAll() => Ok(_context.item.ToList());
 
