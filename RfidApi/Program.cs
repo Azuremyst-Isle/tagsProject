@@ -1,10 +1,16 @@
 using System.Security.Claims;
 using Auth0.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using RfidApi.Data;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// --- Database registration ---
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlite("Data Source=rfid.db") // You can use builder.Configuration if you want to move this to appsettings.json
+);
 
 builder
     .Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -96,6 +102,15 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+// --- Ensure database is created at runtime ---
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.EnsureCreated();
+}
+
+// --- Middleware configuration ---
 
 app.UseAuthentication();
 app.UseAuthorization();

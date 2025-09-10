@@ -8,5 +8,5 @@ public class AppDbContext : DbContext
     public AppDbContext(DbContextOptions<AppDbContext> options)
         : base(options) { }
 
-    public DbSet<Item> item { get; set; }
+    public DbSet<Item> item => Set<Item>();
 }
