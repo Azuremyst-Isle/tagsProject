@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using RfidApi.Data;
 using RfidApi.Models;
 
@@ -15,14 +16,50 @@ public class ItemsController : ControllerBase
 
     // GET: api/items
     [HttpGet]
-    public IActionResult GetAll() => Ok(_context.item.ToList());
+    public IActionResult GetAll([FromQuery] int page = 1, [FromQuery] int pageSize = 20)
+    {
+        if (page < 1)
+            page = 1;
+        if (pageSize < 1)
+            pageSize = 20;
+
+        var totalItems = _context.item.Count();
+        var items = _context.item.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+
+        var result = new
+        {
+            page,
+            pageSize,
+            totalItems,
+            totalPages = (int)Math.Ceiling(totalItems / (double)pageSize),
+            items,
+        };
+
+        return Ok(result);
+    }
 
     [HttpPost]
     public IActionResult Add(Item item)
     {
         _context.item.Add(item);
-        _context.SaveChanges();
-        return CreatedAtAction(nameof(GetByTag), new { rfidTag = item.rfid_tag }, item);
+        try
+        {
+            _context.SaveChanges();
+            return CreatedAtAction(nameof(GetByTag), new { rfidTag = item.rfid_tag }, item);
+        }
+        catch (DbUpdateException ex)
+        {
+            // Check for unique constraint violation (SQLite error code 19)
+            if (ex.InnerException?.Message.Contains("UNIQUE constraint failed") == true)
+            {
+                return Conflict(new { error = "conflict", message = "rfid_tag already exists" });
+            }
+            // For other DB errors, return generic error
+            return StatusCode(
+                500,
+                new { error = "db_error", message = "A database error occurred" }
+            );
+        }
     }
 
     [HttpGet("{rfidTag}")]
