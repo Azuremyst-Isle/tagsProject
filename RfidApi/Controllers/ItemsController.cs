@@ -14,7 +14,6 @@ public class ItemsController : ControllerBase
     public ItemsController(AppDbContext context) => _context = context;
 
     // GET: api/items
-    [Authorize]
     [HttpGet]
     public IActionResult GetAll() => Ok(_context.item.ToList());
 
