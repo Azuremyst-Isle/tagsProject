@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RfidApi.Data;
 using RfidApi.Models;
+using RfidApi.Models.Dtos;
 
 namespace RfidApi.Controllers;
 
@@ -24,7 +25,20 @@ public class ItemsController : ControllerBase
             pageSize = 20;
 
         var totalItems = _context.item.Count();
-        var items = _context.item.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+        var items = _context
+            .item.OrderBy(item => item.Id)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .Select(item => new ItemDto(
+                item.rfid_tag,
+                item.name,
+                item.description,
+                item.status,
+                item.certification_code,
+                item.owner_name,
+                item.last_updated
+            ))
+            .ToList();
 
         var result = new
         {
@@ -39,13 +53,18 @@ public class ItemsController : ControllerBase
     }
 
     [HttpPost]
-    public IActionResult Add(Item item)
+    public IActionResult Add([FromBody] CreateItemDto dto)
     {
-        _context.item.Add(item);
+        Item newItem = dto.MapDtoToItem();
+        _context.item.Add(newItem);
         try
         {
             _context.SaveChanges();
-            return CreatedAtAction(nameof(GetByTag), new { rfidTag = item.rfid_tag }, item);
+            return CreatedAtAction(
+                nameof(GetByTag),
+                new { rfidTag = dto.RfidTag },
+                newItem.MapItemToDto()
+            );
         }
         catch (DbUpdateException ex)
         {
@@ -55,10 +74,7 @@ public class ItemsController : ControllerBase
                 return Conflict(new { error = "conflict", message = "rfid_tag already exists" });
             }
             // For other DB errors, return generic error
-            return StatusCode(
-                500,
-                new { error = "db_error", message = "A database error occurred" }
-            );
+            return StatusCode(500, new { error = "db_error", message = ex.Message });
         }
     }
 
@@ -66,7 +82,19 @@ public class ItemsController : ControllerBase
     public IActionResult GetByTag(string rfidTag)
     {
         var item = _context.item.FirstOrDefault(i => i.rfid_tag == rfidTag);
-        return item == null ? NotFound() : Ok(item);
+        return item == null
+            ? NotFound()
+            : Ok(
+                new ItemDto(
+                    item.rfid_tag,
+                    item.name,
+                    item.description,
+                    item.status,
+                    item.certification_code,
+                    item.owner_name,
+                    item.last_updated
+                )
+            );
     }
 
     [HttpPut("{rfidTag}")]
