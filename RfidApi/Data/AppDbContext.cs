@@ -18,5 +18,7 @@ public class AppDbContext : DbContext
             .Entity<Item>()
             .Property(i => i.last_updated)
             .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+        modelBuilder.Entity<Item>().ToTable("TagItems");
     }
 }
