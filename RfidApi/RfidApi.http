@@ -50,3 +50,7 @@ Content-Type: application/json
   "ownerName": "Tony",
   "lastUpdated": "2023-01-01T00:00:00Z"
 }
+
+
+### Get all users
+GET {{RfidApi_HostAddress}}/api/users
