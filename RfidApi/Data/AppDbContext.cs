@@ -12,6 +12,8 @@ public class AppDbContext : DbContext
 
     public DbSet<Users> Users => Set<Users>();
 
+    public DbSet<ItemEvent> ItemEvents => Set<ItemEvent>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Item>().Property(i => i.status).HasDefaultValue("available");
@@ -22,5 +24,16 @@ public class AppDbContext : DbContext
             .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
         modelBuilder.Entity<Item>().ToTable("TagItems");
+
+        modelBuilder
+            .Entity<Users>()
+            .Property(u => u.CreatedAt)
+            .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+        modelBuilder.Entity<ItemEvent>().HasIndex(e => e.ItemId);
+        modelBuilder
+            .Entity<ItemEvent>()
+            .Property(e => e.CreatedAt)
+            .HasDefaultValueSql("CURRENT_TIMESTAMP");
     }
 }
