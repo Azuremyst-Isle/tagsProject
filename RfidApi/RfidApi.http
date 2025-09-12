@@ -27,13 +27,11 @@ PUT {{RfidApi_HostAddress}}/api/items/{{rfidTagNew}}
 Content-Type: application/json
 
 {
-  "rfid_tag": "123",
   "name": "Updated Item",
   "description": "Updated description",
   "status": "available",
-  "certification_code": "CERT123",
-  "owner_name": "Owner Name",
-  "last_updated": "2023-01-01T00:00:00Z"
+  "certificationCode": "CERT123",
+  "ownerName": "Owner Name"
 }
 
 ### Delete Item
@@ -48,7 +46,7 @@ Content-Type: application/json
   "name": "Test Tag",
   "description": "TestTag",
   "status": "available",
-  "certification_code": "none",
-  "owner_name": "Tony",
-  "last_updated": "2023-01-01T00:00:00Z"
+  "certificationCode": "none",
+  "ownerName": "Tony",
+  "lastUpdated": "2023-01-01T00:00:00Z"
 }

@@ -98,19 +98,15 @@ public class ItemsController : ControllerBase
     }
 
     [HttpPut("{rfidTag}")]
-    public IActionResult Update(string rfidTag, Item updated)
+    public IActionResult Update(string rfidTag, UpdateItemDto updates)
     {
         var item = _context.item.FirstOrDefault(i => i.rfid_tag == rfidTag);
         if (item == null)
             return NotFound();
-        item.name = updated.name;
-        item.description = updated.description;
-        item.status = updated.status;
-        item.certification_code = updated.certification_code;
-        item.owner_name = updated.owner_name;
-        item.last_updated = DateTime.UtcNow;
+
+        item.UpdateItem(updates);
         _context.SaveChanges();
-        return Ok(item);
+        return Ok(item.MapItemToDto());
     }
 
     [HttpDelete("{rfidTag}")]

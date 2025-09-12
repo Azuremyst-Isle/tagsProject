@@ -26,4 +26,14 @@ public static class ItemMappingExtensions
             owner_name = itemDto.OwnerName,
             last_updated = DateTime.UtcNow,
         };
+
+    public static void UpdateItem(this Item item, UpdateItemDto itemDto)
+    {
+        item.name = itemDto.Name;
+        item.description = itemDto.Description;
+        item.status = itemDto.Status;
+        item.certification_code = itemDto.CertificationCode;
+        item.owner_name = itemDto.OwnerName;
+        item.last_updated = DateTime.UtcNow;
+    }
 }
