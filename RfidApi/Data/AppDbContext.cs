@@ -10,6 +10,8 @@ public class AppDbContext : DbContext
 
     public DbSet<Item> item => Set<Item>();
 
+    public DbSet<Users> Users => Set<Users>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Item>().Property(i => i.status).HasDefaultValue("available");
