@@ -29,15 +29,7 @@ public class ItemsController : ControllerBase
             .item.OrderBy(item => item.Id)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
-            .Select(item => new ItemDto(
-                item.rfid_tag,
-                item.name,
-                item.description,
-                item.status,
-                item.certification_code,
-                item.owner_name,
-                item.last_updated
-            ))
+            .Select(item => item.MapItemToDto())
             .ToList();
 
         var result = new
