@@ -1,7 +1,9 @@
 using System;
+using Microsoft.EntityFrameworkCore;
 
 namespace RfidApi.Models;
 
+[Index(nameof(Email), IsUnique = true)]
 public class Users
 {
     public int Id { get; set; } // PK
