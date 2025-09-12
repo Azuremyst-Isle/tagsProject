@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using RfidApi.Data;
 using RfidApi.Models;
+using RfidApi.Models.Dtos;
 
 namespace RfidApi.Controllers
 {
@@ -22,7 +24,7 @@ namespace RfidApi.Controllers
             if (pageSize < 1)
                 pageSize = 20;
 
-            var totalUsers = _context.Users.Count();
+            var total = _context.Users.Count();
             var users = _context
                 .Users.OrderBy(u => u.Id)
                 .Skip((page - 1) * pageSize)
@@ -32,14 +34,47 @@ namespace RfidApi.Controllers
 
             var result = new
             {
+                users,
                 page,
                 pageSize,
-                totalUsers,
-                totalPages = (int)Math.Ceiling(totalUsers / (double)pageSize),
-                users,
+                total,
             };
 
             return Ok(result);
+        }
+
+        [HttpPost]
+        public IActionResult CreateUser([FromBody] UserDto userDto)
+        { // Create user
+            Users newUser = userDto.MapDtoToUser();
+            _context.Users.Add(newUser);
+
+            try
+            {
+                _context.SaveChanges();
+
+                return CreatedAtAction(
+                    nameof(GetUsers),
+                    new { id = newUser.Id },
+                    newUser.MapUserToDto()
+                );
+            }
+            catch (DbUpdateException ex)
+            {
+                if (ex.InnerException?.Message.Contains("UNIQUE constraint failed:") == true)
+                {
+                    return Conflict(
+                        new
+                        {
+                            error = "email_already_exists",
+                            message = "A user with this email already exists.",
+                        }
+                    );
+                }
+
+                // For other DB errors, return generic error
+                return StatusCode(500, new { error = "db_error", message = ex.Message });
+            }
         }
     }
 }
