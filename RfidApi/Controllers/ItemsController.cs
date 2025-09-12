@@ -74,19 +74,7 @@ public class ItemsController : ControllerBase
     public IActionResult GetByTag(string rfidTag)
     {
         var item = _context.item.FirstOrDefault(i => i.rfid_tag == rfidTag);
-        return item == null
-            ? NotFound()
-            : Ok(
-                new ItemDto(
-                    item.rfid_tag,
-                    item.name,
-                    item.description,
-                    item.status,
-                    item.certification_code,
-                    item.owner_name,
-                    item.last_updated
-                )
-            );
+        return item == null ? NotFound() : Ok(item.MapItemToDto());
     }
 
     [HttpPut("{rfidTag}")]
