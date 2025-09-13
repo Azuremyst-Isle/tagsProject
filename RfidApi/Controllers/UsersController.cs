@@ -17,20 +17,23 @@ namespace RfidApi.Controllers
 
         // GET: api/users
         [HttpGet]
-        public IActionResult GetUsers([FromQuery] int page = 1, [FromQuery] int pageSize = 20)
+        public async Task<IActionResult> GetUsers(
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 20
+        )
         {
             if (page < 1)
                 page = 1;
             if (pageSize < 1)
                 pageSize = 20;
 
-            var total = _context.Users.Count();
-            var users = _context
+            var total = await _context.Users.CountAsync();
+            var users = await _context
                 .Users.OrderBy(u => u.Id)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .Select(u => u.MapUserToDto())
-                .ToList();
+                .ToListAsync();
 
             var result = new
             {
@@ -44,14 +47,14 @@ namespace RfidApi.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateUser([FromBody] UserDto userDto)
+        public async Task<IActionResult> CreateUser([FromBody] UserDto userDto)
         { // Create user
             Users newUser = userDto.MapDtoToUser();
-            _context.Users.Add(newUser);
+            await _context.Users.AddAsync(newUser);
 
             try
             {
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
 
                 return CreatedAtAction(
                     nameof(GetUsers),
