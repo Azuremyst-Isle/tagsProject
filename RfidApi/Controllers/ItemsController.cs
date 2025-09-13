@@ -52,6 +52,19 @@ public class ItemsController : ControllerBase
         try
         {
             _context.SaveChanges();
+
+            // Create Item event before return
+
+            ItemEvent newEvent = new ItemEvent
+            {
+                ItemId = newItem.Id, // The ID of the item you just created
+                EventType = "created", // The type of event
+                EventPayload = null, // No extra payload for creation
+            };
+
+            _context.ItemEvents.Add(newEvent);
+            _context.SaveChanges();
+
             return CreatedAtAction(
                 nameof(GetByTag),
                 new { rfidTag = dto.RfidTag },
@@ -84,8 +97,37 @@ public class ItemsController : ControllerBase
         if (item == null)
             return NotFound();
 
+        // Track changes
+        var changedProperties = new List<string>();
+        if (item.name != updates.Name)
+            changedProperties.Add("name");
+        if (item.description != updates.Description)
+            changedProperties.Add("description");
+        if (item.status != updates.Status)
+            changedProperties.Add("status");
+        if (item.certification_code != updates.CertificationCode)
+            changedProperties.Add("certification_code");
+        if (item.owner_name != updates.OwnerName)
+            changedProperties.Add("owner_name");
+
         item.UpdateItem(updates);
         _context.SaveChanges();
+
+        // Serialize changed property names as JSON
+        string? payload =
+            changedProperties.Count > 0
+                ? System.Text.Json.JsonSerializer.Serialize(changedProperties)
+                : null;
+
+        ItemEvent newEvent = new ItemEvent
+        {
+            ItemId = item.Id,
+            EventType = "updated",
+            EventPayload = payload,
+        };
+        _context.ItemEvents.Add(newEvent);
+        _context.SaveChanges();
+
         return Ok(item.MapItemToDto());
     }
 
@@ -97,6 +139,16 @@ public class ItemsController : ControllerBase
             return NotFound();
         _context.item.Remove(item);
         _context.SaveChanges();
+
+        ItemEvent newEvent = new ItemEvent
+        {
+            ItemId = item.Id,
+            EventType = "deleted",
+            EventPayload = null,
+        };
+        _context.ItemEvents.Add(newEvent);
+        _context.SaveChanges();
+
         return NoContent();
     }
 }
