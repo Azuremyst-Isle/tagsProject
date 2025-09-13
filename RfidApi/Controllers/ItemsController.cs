@@ -17,20 +17,20 @@ public class ItemsController : ControllerBase
 
     // GET: api/items
     [HttpGet]
-    public IActionResult GetAll([FromQuery] int page = 1, [FromQuery] int pageSize = 20)
+    public async Task<IActionResult> GetAll([FromQuery] int page = 1, [FromQuery] int pageSize = 20)
     {
         if (page < 1)
             page = 1;
         if (pageSize < 1)
             pageSize = 20;
 
-        var totalItems = _context.item.Count();
-        var items = _context
+        var totalItems = await _context.item.CountAsync();
+        var items = await _context
             .item.OrderBy(item => item.Id)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .Select(item => item.MapItemToDto())
-            .ToList();
+            .ToListAsync();
 
         var result = new
         {
@@ -45,13 +45,13 @@ public class ItemsController : ControllerBase
     }
 
     [HttpPost]
-    public IActionResult Add([FromBody] CreateItemDto dto)
+    public async Task<IActionResult> Add([FromBody] CreateItemDto dto)
     {
         Item newItem = dto.MapDtoToItem();
-        _context.item.Add(newItem);
+        await _context.item.AddAsync(newItem);
         try
         {
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             // Create Item event before return
 
@@ -62,8 +62,8 @@ public class ItemsController : ControllerBase
                 EventPayload = null, // No extra payload for creation
             };
 
-            _context.ItemEvents.Add(newEvent);
-            _context.SaveChanges();
+            await _context.ItemEvents.AddAsync(newEvent);
+            await _context.SaveChangesAsync();
 
             return CreatedAtAction(
                 nameof(GetByTag),
@@ -84,16 +84,16 @@ public class ItemsController : ControllerBase
     }
 
     [HttpGet("{rfidTag}")]
-    public IActionResult GetByTag(string rfidTag)
+    public async Task<IActionResult> GetByTag(string rfidTag)
     {
-        var item = _context.item.FirstOrDefault(i => i.rfid_tag == rfidTag);
+        var item = await _context.item.FirstOrDefaultAsync(i => i.rfid_tag == rfidTag);
         return item == null ? NotFound() : Ok(item.MapItemToDto());
     }
 
     [HttpPut("{rfidTag}")]
-    public IActionResult Update(string rfidTag, UpdateItemDto updates)
+    public async Task<IActionResult> Update(string rfidTag, UpdateItemDto updates)
     {
-        var item = _context.item.FirstOrDefault(i => i.rfid_tag == rfidTag);
+        var item = await _context.item.FirstOrDefaultAsync(i => i.rfid_tag == rfidTag);
         if (item == null)
             return NotFound();
 
@@ -111,7 +111,7 @@ public class ItemsController : ControllerBase
             changedProperties.Add("owner_name");
 
         item.UpdateItem(updates);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
 
         // Serialize changed property names as JSON
         string? payload =
@@ -125,20 +125,20 @@ public class ItemsController : ControllerBase
             EventType = "updated",
             EventPayload = payload,
         };
-        _context.ItemEvents.Add(newEvent);
-        _context.SaveChanges();
+        await _context.ItemEvents.AddAsync(newEvent);
+        await _context.SaveChangesAsync();
 
         return Ok(item.MapItemToDto());
     }
 
     [HttpDelete("{rfidTag}")]
-    public IActionResult Delete(string rfidTag)
+    public async Task<IActionResult> Delete(string rfidTag)
     {
-        var item = _context.item.FirstOrDefault(i => i.rfid_tag == rfidTag);
+        var item = await _context.item.FirstOrDefaultAsync(i => i.rfid_tag == rfidTag);
         if (item == null)
             return NotFound();
         _context.item.Remove(item);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
 
         ItemEvent newEvent = new ItemEvent
         {
@@ -146,8 +146,8 @@ public class ItemsController : ControllerBase
             EventType = "deleted",
             EventPayload = null,
         };
-        _context.ItemEvents.Add(newEvent);
-        _context.SaveChanges();
+        await _context.ItemEvents.AddAsync(newEvent);
+        await _context.SaveChangesAsync();
 
         return NoContent();
     }
