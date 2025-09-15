@@ -3,10 +3,10 @@ using System;
 namespace RfidApi.Models.Dtos;
 
 public record CreateItemDto(
-    string RfidTag,
+    string Rfid_tag,
     string Name,
     string? Description,
     string Status,
-    string? CertificationCode,
-    string? OwnerName
+    string? Certification_code,
+    string? Owner_name
 );

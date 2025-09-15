@@ -67,7 +67,7 @@ public class ItemsController : ControllerBase
 
             return CreatedAtAction(
                 nameof(GetByTag),
-                new { rfidTag = dto.RfidTag },
+                new { rfidTag = dto.Rfid_tag },
                 newItem.MapItemToDto()
             );
         }

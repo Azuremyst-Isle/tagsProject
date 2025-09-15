@@ -18,12 +18,12 @@ public static class ItemMappingExtensions
     public static Item MapDtoToItem(this CreateItemDto itemDto) =>
         new()
         {
-            rfid_tag = itemDto.RfidTag,
+            rfid_tag = itemDto.Rfid_tag,
             name = itemDto.Name,
             description = itemDto.Description,
             status = itemDto.Status,
-            certification_code = itemDto.CertificationCode,
-            owner_name = itemDto.OwnerName,
+            certification_code = itemDto.Certification_code,
+            owner_name = itemDto.Owner_name,
             last_updated = DateTime.UtcNow,
         };
 

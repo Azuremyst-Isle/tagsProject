@@ -13,13 +13,13 @@ POST {{RfidApi_HostAddress}}/api/items
 Content-Type: application/json
 
 {
-  "RfidTag": "{{rfidTagNew}}",
-  "Name": "New Item",
-  "Description": "Description for new item",
-  "Status": "available",
-  "CertificationCode": "CERT123",
-  "OwnerName": "Owner Name",
-  "LastUpdated": "2023-01-01T00:00:00Z"
+  "rfid_tag": "{{rfidTagNew}}",
+  "name": "New Item",
+  "description": "Description for new item",
+  "status": "available",
+  "certification_code": "CERT123",
+  "owner_name": "Owner Name",
+  "last_updated": "2023-01-01T00:00:00Z"
 }
 
 ### Update Item
@@ -30,8 +30,8 @@ Content-Type: application/json
   "name": "Updated Item",
   "description": "Updated description",
   "status": "available",
-  "certificationCode": "CERT123",
-  "ownerName": "Owner Name"
+  "certification_code": "CERT123",
+  "owner_name": "Owner Name"
 }
 
 ### Delete Item
