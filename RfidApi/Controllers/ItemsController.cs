@@ -58,7 +58,7 @@ public class ItemsController : ControllerBase
             ItemEvent newEvent = new ItemEvent
             {
                 ItemId = newItem.Id, // The ID of the item you just created
-                EventType = "created", // The type of event
+                EventType = EventTypes.Created, // The type of event
                 EventPayload = null, // No extra payload for creation
             };
 
@@ -122,7 +122,7 @@ public class ItemsController : ControllerBase
         ItemEvent newEvent = new ItemEvent
         {
             ItemId = item.Id,
-            EventType = "updated",
+            EventType = EventTypes.Updated,
             EventPayload = payload,
         };
         await _context.ItemEvents.AddAsync(newEvent);
@@ -143,7 +143,7 @@ public class ItemsController : ControllerBase
         ItemEvent newEvent = new ItemEvent
         {
             ItemId = item.Id,
-            EventType = "deleted",
+            EventType = EventTypes.Deleted,
             EventPayload = null,
         };
         await _context.ItemEvents.AddAsync(newEvent);

@@ -18,8 +18,7 @@ Content-Type: application/json
   "description": "Description for new item",
   "status": "available",
   "certification_code": "CERT123",
-  "owner_name": "Owner Name",
-  "last_updated": "2023-01-01T00:00:00Z"
+  "owner_name": "Owner Name"
 }
 
 ### Update Item
@@ -46,9 +45,9 @@ Content-Type: application/json
   "name": "Test Tag",
   "description": "TestTag",
   "status": "available",
-  "certificationCode": "none",
-  "ownerName": "Tony",
-  "lastUpdated": "2023-01-01T00:00:00Z"
+  "certification_code": "none",
+  "owner_name": "Tony",
+  "last_updated": "2023-01-01T00:00:00Z"
 }
 
 
