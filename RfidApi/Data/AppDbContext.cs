@@ -25,12 +25,28 @@ public class AppDbContext : DbContext
 
         modelBuilder.Entity<Item>().ToTable("TagItems");
 
+        modelBuilder.Entity<Users>(entity =>
+        {
+            entity.Property(u => u.Id).HasColumnName("id");
+            entity.Property(u => u.Email).HasColumnName("email");
+            entity.Property(u => u.Name).HasColumnName("name");
+            entity.Property(u => u.Role).HasColumnName("role");
+            entity.Property(u => u.CreatedAt).HasColumnName("created_at");
+        });
         modelBuilder
             .Entity<Users>()
             .Property(u => u.CreatedAt)
             .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
         modelBuilder.Entity<ItemEvent>().HasIndex(e => e.ItemId);
+        modelBuilder.Entity<ItemEvent>(entity =>
+        {
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.ItemId).HasColumnName("item_id");
+            entity.Property(e => e.EventType).HasColumnName("event_type");
+            entity.Property(e => e.EventPayload).HasColumnName("event_payload");
+            entity.Property(e => e.CreatedAt).HasColumnName("created_at");
+        });
         modelBuilder
             .Entity<ItemEvent>()
             .Property(e => e.CreatedAt)

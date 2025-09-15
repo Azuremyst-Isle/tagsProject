@@ -12,3 +12,11 @@ public class ItemEvent
     public string? EventPayload { get; set; } // JSON string with details
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 }
+
+public static class EventTypes
+{
+    public const string Created = "created";
+    public const string Updated = "updated";
+    public const string Deleted = "deleted";
+    public const string OwnershipAssigned = "ownership_assigned";
+}
