@@ -23,6 +23,15 @@ public class AppDbContext : DbContext
             .Property(i => i.last_updated)
             .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
+        modelBuilder
+            .Entity<Item>()
+            .HasOne(i => i.OwnerUser)
+            .WithMany()
+            .HasForeignKey(i => i.OwnerUserId)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        modelBuilder.Entity<Item>().HasIndex(i => i.OwnerUserId);
+
         modelBuilder.Entity<Item>().ToTable("TagItems");
 
         modelBuilder.Entity<Users>(entity =>

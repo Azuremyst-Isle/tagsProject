@@ -17,16 +17,29 @@ public class ItemsController : ControllerBase
 
     // GET: api/items
     [HttpGet]
-    public async Task<IActionResult> GetAll([FromQuery] int page = 1, [FromQuery] int pageSize = 20)
+    public async Task<IActionResult> GetAll(
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 20,
+        [FromQuery] string? ownerEmail = null
+    )
     {
         if (page < 1)
             page = 1;
         if (pageSize < 1)
             pageSize = 20;
 
-        var totalItems = await _context.item.CountAsync();
-        var items = await _context
-            .item.OrderBy(item => item.Id)
+        var query = _context.item.AsQueryable();
+
+        if (!string.IsNullOrEmpty(ownerEmail))
+        {
+            query = query
+                .Include(i => i.OwnerUser)
+                .Where(i => i.OwnerUser != null && i.OwnerUser.Email == ownerEmail);
+        }
+
+        var totalItems = await query.CountAsync();
+        var items = await query
+            .OrderBy(item => item.Id)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .Select(item => item.MapItemToDto())

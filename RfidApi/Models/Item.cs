@@ -15,5 +15,8 @@ public class Item
     public string status { get; set; } = "available";
     public string? certification_code { get; set; } // Optional
     public string? owner_name { get; set; }
+
+    public int? OwnerUserId { get; set; } // Optional foreign key to Users table
+    public Users? OwnerUser { get; set; } // Navigation property
     public DateTime last_updated { get; set; } = DateTime.UtcNow;
 }
