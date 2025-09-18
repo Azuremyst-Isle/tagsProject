@@ -32,7 +32,7 @@ public class AppDbContext : DbContext
 
         modelBuilder.Entity<Item>().HasIndex(i => i.OwnerUserId);
 
-        modelBuilder.Entity<Item>().ToTable("TagItems");
+        modelBuilder.Entity<Item>().ToTable("items");
 
         modelBuilder.Entity<Users>(entity =>
         {
