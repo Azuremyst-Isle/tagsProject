@@ -12,7 +12,8 @@ public static class ItemMappingExtensions
             item.status,
             item.certification_code,
             item.owner_name,
-            item.last_updated
+            item.last_updated,
+            item.OwnerUser?.Email // May be null if no owner
         );
 
     public static Item MapDtoToItem(this CreateItemDto itemDto) =>

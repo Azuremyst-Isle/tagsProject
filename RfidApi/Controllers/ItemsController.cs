@@ -49,8 +49,7 @@ public class ItemsController : ControllerBase
         {
             page,
             pageSize,
-            totalItems,
-            totalPages = (int)Math.Ceiling(totalItems / (double)pageSize),
+            total = totalItems,
             items,
         };
 
@@ -61,6 +60,8 @@ public class ItemsController : ControllerBase
     public async Task<IActionResult> Add([FromBody] CreateItemDto dto)
     {
         Item newItem = dto.MapDtoToItem();
+        // temporary setting OwnerUserId to test user
+        newItem.OwnerUserId = 1; // Assuming 1 is the ID of the test user
         await _context.item.AddAsync(newItem);
         try
         {

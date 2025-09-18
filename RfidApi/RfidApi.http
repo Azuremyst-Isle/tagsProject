@@ -50,6 +50,8 @@ Content-Type: application/json
   "last_updated": "2023-01-01T00:00:00Z"
 }
 
+### Get all items with owner email filter
+GET {{RfidApi_HostAddress}}/api/items?ownerEmail=alice@example.com
 
 ### Get all users
 GET {{RfidApi_HostAddress}}/api/users
