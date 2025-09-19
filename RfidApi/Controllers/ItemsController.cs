@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
 using RfidApi.Data;
 using RfidApi.Models;
 using RfidApi.Models.Dtos;
@@ -28,7 +29,7 @@ public class ItemsController : ControllerBase
         if (pageSize < 1)
             pageSize = 20;
 
-        var query = _context.item.AsQueryable();
+        var query = _context.item.Include(i => i.OwnerUser).AsQueryable();
 
         if (!string.IsNullOrEmpty(ownerEmail))
         {
@@ -48,7 +49,7 @@ public class ItemsController : ControllerBase
         var result = new
         {
             page,
-            pageSize,
+            page_size = pageSize,
             total = totalItems,
             items,
         };
@@ -136,6 +137,41 @@ public class ItemsController : ControllerBase
             ItemId = item.Id,
             EventType = EventTypes.Updated,
             EventPayload = payload,
+        };
+        await _context.ItemEvents.AddAsync(newEvent);
+        await _context.SaveChangesAsync();
+
+        return Ok(item.MapItemToDto());
+    }
+
+    [HttpPut("{rfidTag}/owner")]
+    public async Task<IActionResult> AssignOwnership(string rfidTag, [FromBody] OwnerAssignDto dto)
+    {
+        if (!ModelState.IsValid)
+        {
+            var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
+            return UnprocessableEntity(new { error = "validation_error", details = errors });
+        }
+
+        var OwnerEmail = dto.OwnerEmail;
+        var item = await _context.item.FirstOrDefaultAsync(i => i.rfid_tag == rfidTag);
+        if (item == null)
+            return NotFound(new { error = "not_found", message = "Item not found" });
+
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == OwnerEmail);
+        if (user == null)
+            return NotFound(new { error = "not_found", message = "User not found" });
+
+        item.OwnerUserId = user.Id;
+        item.owner_name = user.Name;
+        item.last_updated = DateTime.UtcNow;
+        await _context.SaveChangesAsync();
+
+        ItemEvent newEvent = new ItemEvent
+        {
+            ItemId = item.Id,
+            EventType = EventTypes.OwnershipAssigned,
+            EventPayload = System.Text.Json.JsonSerializer.Serialize(new { Email = user.Email }),
         };
         await _context.ItemEvents.AddAsync(newEvent);
         await _context.SaveChangesAsync();

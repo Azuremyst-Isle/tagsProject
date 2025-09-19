@@ -36,19 +36,22 @@ Content-Type: application/json
 ### Delete Item
 DELETE {{RfidApi_HostAddress}}/api/items/{{rfidTagNew}}
 
-### Create test Item
-POST {{RfidApi_HostAddress}}/api/items
+### Assign Item to User
+PUT {{RfidApi_HostAddress}}/api/items/{{rfidTagNew}}/owner
 Content-Type: application/json
 
 {
-  "rfid_tag": "04:55:70:D2:22:6D:80",
-  "name": "Test Tag",
-  "description": "TestTag",
-  "status": "available",
-  "certification_code": "none",
-  "owner_name": "Tony",
-  "last_updated": "2023-01-01T00:00:00Z"
+  "Owner_email": "alice@example.com"
 }
+
+### Wrong assing
+PUT {{RfidApi_HostAddress}}/api/items/{{rfidTagNew}}/owner
+Content-Type: application/json
+
+{}
+  
+
+
 
 ### Get all items with owner email filter
 GET {{RfidApi_HostAddress}}/api/items?ownerEmail=alice@example.com
