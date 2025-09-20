@@ -68,3 +68,6 @@ Content-Type: application/json
   "name": "Alice",
   "role": "user"
 }
+
+### Request an event log for an item
+GET {{RfidApi_HostAddress}}/api/items/{{rfidTagNew}}/events

@@ -171,7 +171,9 @@ public class ItemsController : ControllerBase
         {
             ItemId = item.Id,
             EventType = EventTypes.OwnershipAssigned,
-            EventPayload = System.Text.Json.JsonSerializer.Serialize(new { Email = user.Email }),
+            EventPayload = System.Text.Json.JsonSerializer.Serialize(
+                new { owner_email = user.Email }
+            ),
         };
         await _context.ItemEvents.AddAsync(newEvent);
         await _context.SaveChangesAsync();
@@ -198,5 +200,47 @@ public class ItemsController : ControllerBase
         await _context.SaveChangesAsync();
 
         return NoContent();
+    }
+
+    [HttpGet("{rfidTag}/events")]
+    public async Task<IActionResult> GetAllEvents(
+        string rfidTag,
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 20
+    )
+    {
+        if (page < 1)
+            page = 1;
+        if (pageSize < 1)
+            pageSize = 20;
+
+        var item = await _context.item.FirstOrDefaultAsync(i => i.rfid_tag == rfidTag);
+        if (item == null)
+            return NotFound(new { error = "not_found", message = "Item not found" });
+
+        var query = _context.ItemEvents.Where(e => e.ItemId == item.Id).AsQueryable();
+
+        var totalItems = await query.CountAsync();
+        var events = await query
+            .OrderByDescending(e => e.CreatedAt)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .Select(e => new
+            {
+                event_type = e.EventType,
+                event_payload = e.EventPayload,
+                created_at = e.CreatedAt,
+            })
+            .ToListAsync();
+
+        var result = new
+        {
+            page,
+            page_size = pageSize,
+            total = totalItems,
+            events,
+        };
+
+        return Ok(result);
     }
 }
