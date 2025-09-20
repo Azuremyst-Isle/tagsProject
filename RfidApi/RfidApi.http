@@ -54,7 +54,7 @@ Content-Type: application/json
 
 
 ### Get all items with owner email filter
-GET {{RfidApi_HostAddress}}/api/items?ownerEmail=alice@example.com
+GET {{RfidApi_HostAddress}}/api/items?owner_email=alice@example.com
 
 ### Get all users
 GET {{RfidApi_HostAddress}}/api/users
@@ -71,3 +71,6 @@ Content-Type: application/json
 
 ### Request an event log for an item
 GET {{RfidApi_HostAddress}}/api/items/{{rfidTagNew}}/events
+
+### Request an paginated event log for an item
+GET {{RfidApi_HostAddress}}/api/items/{{rfidTagNew}}/events?page=1&page_size=5

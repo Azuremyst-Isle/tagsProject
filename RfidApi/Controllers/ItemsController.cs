@@ -20,8 +20,8 @@ public class ItemsController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAll(
         [FromQuery] int page = 1,
-        [FromQuery] int pageSize = 20,
-        [FromQuery] string? ownerEmail = null
+        [FromQuery(Name = "page_size")] int pageSize = 20,
+        [FromQuery(Name = "owner_email")] string? ownerEmail = null
     )
     {
         if (page < 1)
@@ -206,7 +206,7 @@ public class ItemsController : ControllerBase
     public async Task<IActionResult> GetAllEvents(
         string rfidTag,
         [FromQuery] int page = 1,
-        [FromQuery] int pageSize = 20
+        [FromQuery(Name = "page_size")] int pageSize = 20
     )
     {
         if (page < 1)
@@ -225,11 +225,11 @@ public class ItemsController : ControllerBase
             .OrderByDescending(e => e.CreatedAt)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
-            .Select(e => new
+            .Select(e => new EventsDto
             {
-                event_type = e.EventType,
-                event_payload = e.EventPayload,
-                created_at = e.CreatedAt,
+                EventType = e.EventType,
+                EventPayload = e.EventPayload,
+                CreatedAt = e.CreatedAt,
             })
             .ToListAsync();
 
