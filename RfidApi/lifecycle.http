@@ -1,0 +1,52 @@
+@RfidApi_HostAddress = http://localhost:5000
+@rfidTagNew = 111
+
+### Create new User
+POST {{RfidApi_HostAddress}}/api/users
+Content-Type: application/json
+
+{
+  "email": "testuser@example.com",
+  "name": "Test User",
+  "role": "user"
+}
+
+
+### Create new Item
+POST {{RfidApi_HostAddress}}/api/items
+Content-Type: application/json
+
+{
+  "rfid_tag": "{{rfidTagNew}}",
+  "name": "New Item",
+  "description": "Description for new item",
+  "status": "available",
+  "certification_code": "CERT123",
+  "owner_name": "Owner Name"
+}
+
+### Assign User to item
+PUT {{RfidApi_HostAddress}}/api/items/{{rfidTagNew}}/owner
+Content-Type: application/json
+
+{
+  "owner_email": "alice@example.com"
+}
+
+### Update Item
+PUT {{RfidApi_HostAddress}}/api/items/{{rfidTagNew}}
+Content-Type: application/json
+
+{
+  "name": "Updated Item",
+  "status": "available"
+}
+
+### Get single Item
+GET {{RfidApi_HostAddress}}/api/items/{{rfidTagNew}}
+
+### Delete Item
+DELETE {{RfidApi_HostAddress}}/api/items/{{rfidTagNew}}
+
+### Request an event log for an item
+GET {{RfidApi_HostAddress}}/api/items/{{rfidTagNew}}/events

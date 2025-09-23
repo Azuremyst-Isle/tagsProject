@@ -51,6 +51,7 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<ItemEvent>(entity =>
         {
             entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.RfidTag).HasColumnName("rfid_tag");
             entity.Property(e => e.ItemId).HasColumnName("item_id");
             entity.Property(e => e.EventType).HasColumnName("event_type");
             entity.Property(e => e.EventPayload).HasColumnName("event_payload");

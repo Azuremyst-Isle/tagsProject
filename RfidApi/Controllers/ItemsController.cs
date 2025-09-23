@@ -21,7 +21,8 @@ public class ItemsController : ControllerBase
     public async Task<IActionResult> GetAll(
         [FromQuery] int page = 1,
         [FromQuery(Name = "page_size")] int pageSize = 20,
-        [FromQuery(Name = "owner_email")] string? ownerEmail = null
+        [FromQuery(Name = "owner_email")] string? ownerEmail = null,
+        [FromQuery(Name = "status")] string? status = null
     )
     {
         if (page < 1)
@@ -36,6 +37,11 @@ public class ItemsController : ControllerBase
             query = query
                 .Include(i => i.OwnerUser)
                 .Where(i => i.OwnerUser != null && i.OwnerUser.Email == ownerEmail);
+        }
+
+        if (!string.IsNullOrEmpty(status))
+        {
+            query = query.Where(i => i.status == status);
         }
 
         var totalItems = await query.CountAsync();
@@ -71,6 +77,7 @@ public class ItemsController : ControllerBase
             ItemEvent newEvent = new ItemEvent
             {
                 ItemId = newItem.Id, // The ID of the item you just created
+                RfidTag = newItem.rfid_tag,
                 EventType = EventTypes.Created, // The type of event
                 EventPayload = null, // No extra payload for creation
             };
@@ -99,14 +106,18 @@ public class ItemsController : ControllerBase
     [HttpGet("{rfidTag}")]
     public async Task<IActionResult> GetByTag(string rfidTag)
     {
-        var item = await _context.item.FirstOrDefaultAsync(i => i.rfid_tag == rfidTag);
+        var item = await _context
+            .item.Include(i => i.OwnerUser)
+            .FirstOrDefaultAsync(i => i.rfid_tag == rfidTag);
         return item == null ? NotFound() : Ok(item.MapItemToDto());
     }
 
     [HttpPut("{rfidTag}")]
     public async Task<IActionResult> Update(string rfidTag, UpdateItemDto updates)
     {
-        var item = await _context.item.FirstOrDefaultAsync(i => i.rfid_tag == rfidTag);
+        var item = await _context
+            .item.Include(i => i.OwnerUser)
+            .FirstOrDefaultAsync(i => i.rfid_tag == rfidTag);
         if (item == null)
             return NotFound();
 
@@ -135,6 +146,7 @@ public class ItemsController : ControllerBase
         ItemEvent newEvent = new ItemEvent
         {
             ItemId = item.Id,
+            RfidTag = item.rfid_tag,
             EventType = EventTypes.Updated,
             EventPayload = payload,
         };
@@ -170,6 +182,7 @@ public class ItemsController : ControllerBase
         ItemEvent newEvent = new ItemEvent
         {
             ItemId = item.Id,
+            RfidTag = item.rfid_tag,
             EventType = EventTypes.OwnershipAssigned,
             EventPayload = System.Text.Json.JsonSerializer.Serialize(
                 new { owner_email = user.Email }
@@ -193,6 +206,7 @@ public class ItemsController : ControllerBase
         ItemEvent newEvent = new ItemEvent
         {
             ItemId = item.Id,
+            RfidTag = item.rfid_tag,
             EventType = EventTypes.Deleted,
             EventPayload = null,
         };
@@ -214,11 +228,7 @@ public class ItemsController : ControllerBase
         if (pageSize < 1)
             pageSize = 20;
 
-        var item = await _context.item.FirstOrDefaultAsync(i => i.rfid_tag == rfidTag);
-        if (item == null)
-            return NotFound(new { error = "not_found", message = "Item not found" });
-
-        var query = _context.ItemEvents.Where(e => e.ItemId == item.Id).AsQueryable();
+        var query = _context.ItemEvents.Where(e => e.RfidTag == rfidTag).AsQueryable();
 
         var totalItems = await query.CountAsync();
         var events = await query

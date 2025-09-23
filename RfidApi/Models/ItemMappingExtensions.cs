@@ -31,10 +31,10 @@ public static class ItemMappingExtensions
     public static void UpdateItem(this Item item, UpdateItemDto itemDto)
     {
         item.name = itemDto.Name;
-        item.description = itemDto.Description;
+        item.description = itemDto.Description ?? item.description;
         item.status = itemDto.Status;
-        item.certification_code = itemDto.CertificationCode;
-        item.owner_name = itemDto.OwnerName;
+        item.certification_code = itemDto.CertificationCode ?? item.certification_code;
+        item.owner_name = itemDto.OwnerName ?? item.owner_name;
         item.last_updated = DateTime.UtcNow;
     }
 }

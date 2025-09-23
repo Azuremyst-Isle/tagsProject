@@ -6,6 +6,7 @@ namespace RfidApi.Models;
 public class ItemEvent
 {
     public int Id { get; set; } // PK
+    public string RfidTag { get; set; } = default!;
     public int ItemId { get; set; } // FK -> Item.Id
 
     public required string EventType { get; set; } // created, updated, deleted, ownership_assigned

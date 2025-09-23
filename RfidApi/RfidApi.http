@@ -1,5 +1,5 @@
 @RfidApi_HostAddress = http://localhost:5000
-@rfidTag = 123
+@rfidTag = 125
 @rfidTagNew = 125
 
 ### Get all items
@@ -22,7 +22,7 @@ Content-Type: application/json
 }
 
 ### Update Item
-PUT {{RfidApi_HostAddress}}/api/items/{{rfidTagNew}}
+PUT {{RfidApi_HostAddress}}/api/items/{{rfidTag}}
 Content-Type: application/json
 
 {
@@ -30,7 +30,7 @@ Content-Type: application/json
   "description": "Updated description",
   "status": "available",
   "certification_code": "CERT123",
-  "owner_name": "Owner Name"
+  "owner_name": "Alice"
 }
 
 ### Delete Item
