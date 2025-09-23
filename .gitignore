@@ -166,3 +166,5 @@ obj/
 # my publish folders
 publish/
 RfidApi/rfid.db
+RfidApi/rfid.db-shm
+RfidApi/rfid.db-wal
