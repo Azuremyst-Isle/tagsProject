@@ -22,7 +22,9 @@ public class ItemsController : ControllerBase
         [FromQuery] int page = 1,
         [FromQuery(Name = "page_size")] int pageSize = 20,
         [FromQuery(Name = "owner_email")] string? ownerEmail = null,
-        [FromQuery(Name = "status")] string? status = null
+        [FromQuery(Name = "status")] string? status = null,
+        [FromQuery(Name = "from_date")] DateTime? fromDate = null,
+        [FromQuery(Name = "to_date")] DateTime? toDate = null
     )
     {
         if (page < 1)
@@ -42,6 +44,15 @@ public class ItemsController : ControllerBase
         if (!string.IsNullOrEmpty(status))
         {
             query = query.Where(i => i.status == status);
+        }
+
+        if (fromDate.HasValue)
+        {
+            query = query.Where(i => i.last_updated >= fromDate.Value);
+        }
+        if (toDate.HasValue)
+        {
+            query = query.Where(i => i.last_updated <= toDate.Value);
         }
 
         var totalItems = await query.CountAsync();

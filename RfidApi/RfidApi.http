@@ -13,12 +13,12 @@ POST {{RfidApi_HostAddress}}/api/items
 Content-Type: application/json
 
 {
-  "rfid_tag": "{{rfidTagNew}}",
-  "name": "New Item",
-  "description": "Description for new item",
+  "rfid_tag": "ABC123",
+  "name": "Rolex GMT",
+  "description": "Steel bezel",
   "status": "available",
-  "certification_code": "CERT123",
-  "owner_name": "Owner Name"
+  "certification_code": "PSA12345",
+  "owner_name": "John"
 }
 
 ### Update Item
@@ -55,6 +55,12 @@ Content-Type: application/json
 
 ### Get all items with owner email filter
 GET {{RfidApi_HostAddress}}/api/items?owner_email=alice@example.com
+
+### Get all items with owner status filter
+GET {{RfidApi_HostAddress}}/api/items?status=available
+
+### Get all items with owner dates filter
+GET {{RfidApi_HostAddress}}/api/items?from_date=2025-09-01&to_date=2025-09-15
 
 ### Get all users
 GET {{RfidApi_HostAddress}}/api/users
