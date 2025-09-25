@@ -80,3 +80,9 @@ GET {{RfidApi_HostAddress}}/api/items/{{rfidTagNew}}/events
 
 ### Request an paginated event log for an item
 GET {{RfidApi_HostAddress}}/api/items/{{rfidTagNew}}/events?page=1&page_size=5
+
+### Get all items with owner status filter
+GET {{RfidApi_HostAddress}}/api/items?sort_by=name
+
+### Get all items with name search
+GET {{RfidApi_HostAddress}}/api/items?search=Item

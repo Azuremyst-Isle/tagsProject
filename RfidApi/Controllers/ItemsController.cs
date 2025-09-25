@@ -25,7 +25,10 @@ public class ItemsController : ControllerBase
         [FromQuery(Name = "owner_email")] string? ownerEmail = null,
         [FromQuery(Name = "status")] string? status = null,
         [FromQuery(Name = "from_date")] DateTime? fromDate = null,
-        [FromQuery(Name = "to_date")] DateTime? toDate = null
+        [FromQuery(Name = "to_date")] DateTime? toDate = null,
+        [FromQuery(Name = "sort_by")] string? sortBy = null,
+        [FromQuery(Name = "sort_order")] string? sortOrder = "asc",
+        [FromQuery(Name = "search")] string? search = null
     )
     {
         if (page < 1)
@@ -56,9 +59,32 @@ public class ItemsController : ControllerBase
             query = query.Where(i => i.last_updated <= toDate.Value);
         }
 
+        // Free text search across name and description (case-insensitive)
+        if (!string.IsNullOrWhiteSpace(search))
+        {
+            var lowered = search.ToLower();
+            query = query.Where(i =>
+                (i.name != null && i.name.ToLower().Contains(lowered))
+                || (i.description != null && i.description.ToLower().Contains(lowered))
+            );
+        }
+
+        bool descending = string.Equals(sortOrder, "desc", StringComparison.OrdinalIgnoreCase);
+
+        query = (sortBy, descending) switch
+        {
+            ("name", false) => query.OrderBy(i => i.name),
+            ("name", true) => query.OrderByDescending(i => i.name),
+            ("status", false) => query.OrderBy(i => i.status),
+            ("status", true) => query.OrderByDescending(i => i.status),
+            ("last_updated", false) => query.OrderBy(i => i.last_updated),
+            ("last_updated", true) => query.OrderByDescending(i => i.last_updated),
+            (_, false) => query.OrderBy(i => i.Id),
+            (_, true) => query.OrderByDescending(i => i.Id),
+        };
+
         var totalItems = await query.CountAsync();
         var items = await query
-            .OrderBy(item => item.Id)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .Select(item => item.MapItemToDto())
