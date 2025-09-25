@@ -1,8 +1,10 @@
 using System.Security.Claims;
 using Auth0.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using RfidApi.Authentication;
 using RfidApi.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,42 +14,50 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite("Data Source=rfid.db") // You can use builder.Configuration if you want to move this to appsettings.json
 );
 
+// Add dummy authentication
+
 builder
-    .Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
-    {
-        options.Authority = "https://dev-frxd7pfagyp0onvq.us.auth0.com/";
-        options.Audience = "https://tagsapp.com/";
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            NameClaimType = ClaimTypes.NameIdentifier,
-        };
-        options.Events = new JwtBearerEvents
-        {
-            OnAuthenticationFailed = context =>
-            {
-                // Log or inspect the exception here
-                Console.WriteLine("Authentication failed: " + context.Exception.Message);
-                return Task.CompletedTask;
-            },
-            OnTokenValidated = context =>
-            {
-                // Inspect the token claims here
-                var claims = context.Principal!.Claims;
-                foreach (var claim in claims)
-                {
-                    Console.WriteLine($"Claim: {claim.Type} = {claim.Value}");
-                }
-                return Task.CompletedTask;
-            },
-            OnChallenge = context =>
-            {
-                // Inspect challenge details
-                Console.WriteLine("Challenge error: " + context.ErrorDescription);
-                return Task.CompletedTask;
-            },
-        };
-    });
+    .Services.AddAuthentication("DummyScheme")
+    .AddScheme<AuthenticationSchemeOptions, DummyAuthHandler>("DummyScheme", options => { });
+
+// More realistic auth
+
+// builder
+//     .Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+//     .AddJwtBearer(options =>
+//     {
+//         options.Authority = "https://dev-frxd7pfagyp0onvq.us.auth0.com/";
+//         options.Audience = "https://tagsapp.com/";
+//         options.TokenValidationParameters = new TokenValidationParameters
+//         {
+//             NameClaimType = ClaimTypes.NameIdentifier,
+//         };
+//         options.Events = new JwtBearerEvents
+//         {
+//             OnAuthenticationFailed = context =>
+//             {
+//                 // Log or inspect the exception here
+//                 Console.WriteLine("Authentication failed: " + context.Exception.Message);
+//                 return Task.CompletedTask;
+//             },
+//             OnTokenValidated = context =>
+//             {
+//                 // Inspect the token claims here
+//                 var claims = context.Principal!.Claims;
+//                 foreach (var claim in claims)
+//                 {
+//                     Console.WriteLine($"Claim: {claim.Type} = {claim.Value}");
+//                 }
+//                 return Task.CompletedTask;
+//             },
+//             OnChallenge = context =>
+//             {
+//                 // Inspect challenge details
+//                 Console.WriteLine("Challenge error: " + context.ErrorDescription);
+//                 return Task.CompletedTask;
+//             },
+//         };
+//     });
 
 // builder
 //     .Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

@@ -10,6 +10,7 @@ namespace RfidApi.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class ItemsController : ControllerBase
 {
     private readonly AppDbContext _context;
