@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using RfidApi.Data;
 using RfidApi.Models;
 using RfidApi.Models.Dtos;
+using static RfidApi.Errors.CustomErrorHandlers;
 
 namespace RfidApi.Controllers
 {
@@ -66,13 +67,7 @@ namespace RfidApi.Controllers
             {
                 if (ex.InnerException?.Message.Contains("UNIQUE constraint failed:") == true)
                 {
-                    return Conflict(
-                        new
-                        {
-                            error = "email_already_exists",
-                            message = "A user with this email already exists.",
-                        }
-                    );
+                    return Conflict(ConflictProblem("A user with this email already exists."));
                 }
 
                 // For other DB errors, return generic error

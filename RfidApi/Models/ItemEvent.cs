@@ -12,6 +12,8 @@ public class ItemEvent
     public required string EventType { get; set; } // created, updated, deleted, ownership_assigned
     public string? EventPayload { get; set; } // JSON string with details
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+    public string? ActorEmail { get; set; } = null; // Email of the user who performed the action, if available
 }
 
 public static class EventTypes

@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore.Query;
 using RfidApi.Data;
 using RfidApi.Models;
 using RfidApi.Models.Dtos;
+using static RfidApi.Errors.CustomErrorHandlers;
 
 namespace RfidApi.Controllers;
 
@@ -134,7 +135,7 @@ public class ItemsController : ControllerBase
             // Check for unique constraint violation (SQLite error code 19)
             if (ex.InnerException?.Message.Contains("UNIQUE constraint failed") == true)
             {
-                return Conflict(new { error = "conflict", message = "rfid_tag already exists" });
+                return Conflict(ConflictProblem());
             }
             // For other DB errors, return generic error
             return StatusCode(500, new { error = "db_error", message = ex.Message });
@@ -147,7 +148,7 @@ public class ItemsController : ControllerBase
         var item = await _context
             .item.Include(i => i.OwnerUser)
             .FirstOrDefaultAsync(i => i.rfid_tag == rfidTag);
-        return item == null ? NotFound() : Ok(item.MapItemToDto());
+        return item == null ? NotFound(NotFoundProblem("Item not found")) : Ok(item.MapItemToDto());
     }
 
     [HttpPut("{rfidTag}")]
@@ -157,7 +158,7 @@ public class ItemsController : ControllerBase
             .item.Include(i => i.OwnerUser)
             .FirstOrDefaultAsync(i => i.rfid_tag == rfidTag);
         if (item == null)
-            return NotFound();
+            return NotFound(NotFoundProblem("Item not found"));
 
         // Track changes
         var changedProperties = new List<string>();
@@ -187,6 +188,7 @@ public class ItemsController : ControllerBase
             RfidTag = item.rfid_tag,
             EventType = EventTypes.Updated,
             EventPayload = payload,
+            ActorEmail = "System",
         };
         await _context.ItemEvents.AddAsync(newEvent);
         await _context.SaveChangesAsync();
@@ -200,17 +202,25 @@ public class ItemsController : ControllerBase
         if (!ModelState.IsValid)
         {
             var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
-            return UnprocessableEntity(new { error = "validation_error", details = errors });
+            return UnprocessableEntity(
+                new ProblemDetails
+                {
+                    Status = StatusCodes.Status422UnprocessableEntity,
+                    Title = "Validation Error",
+                    Detail = "Invalid input data",
+                    Extensions = { { "errors", errors } },
+                }
+            );
         }
 
         var OwnerEmail = dto.OwnerEmail;
         var item = await _context.item.FirstOrDefaultAsync(i => i.rfid_tag == rfidTag);
         if (item == null)
-            return NotFound(new { error = "not_found", message = "Item not found" });
+            return NotFound(NotFoundProblem("Item not found"));
 
         var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == OwnerEmail);
         if (user == null)
-            return NotFound(new { error = "not_found", message = "User not found" });
+            return NotFound(NotFoundProblem("User not found"));
 
         item.OwnerUserId = user.Id;
         item.owner_name = user.Name;
@@ -237,7 +247,7 @@ public class ItemsController : ControllerBase
     {
         var item = await _context.item.FirstOrDefaultAsync(i => i.rfid_tag == rfidTag);
         if (item == null)
-            return NotFound();
+            return NotFound(NotFoundProblem("Item not found"));
         _context.item.Remove(item);
         await _context.SaveChangesAsync();
 

@@ -56,6 +56,7 @@ public class AppDbContext : DbContext
             entity.Property(e => e.EventType).HasColumnName("event_type");
             entity.Property(e => e.EventPayload).HasColumnName("event_payload");
             entity.Property(e => e.CreatedAt).HasColumnName("created_at");
+            entity.Property(e => e.ActorEmail).HasColumnName("actor_email");
         });
         modelBuilder
             .Entity<ItemEvent>()
