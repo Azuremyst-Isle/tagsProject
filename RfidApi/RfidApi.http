@@ -100,3 +100,6 @@ GET {{RfidApi_HostAddress}}/api/audit/items/{{rfidTagNew}}
 
 ### Get audit debug endpoint not found
 GET {{RfidApi_HostAddress}}/api/audit/items/315
+
+### Get demo summary endpoint
+GET {{RfidApi_HostAddress}}/api/demo/summary
