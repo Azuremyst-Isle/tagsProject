@@ -18,7 +18,16 @@ public class DummyAuthHandler : AuthenticationHandler<AuthenticationSchemeOption
 
     protected override Task<AuthenticateResult> HandleAuthenticateAsync()
     {
-        var identity = new System.Security.Claims.ClaimsIdentity("DummyScheme");
+        var claims = new[]
+        {
+            new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.Name, "DummyUser"),
+            new System.Security.Claims.Claim(
+                System.Security.Claims.ClaimTypes.Email,
+                "dummy@test.com"
+            ),
+            new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.Role, "user"),
+        };
+        var identity = new System.Security.Claims.ClaimsIdentity(claims, "DummyScheme");
         var principal = new System.Security.Claims.ClaimsPrincipal(identity);
         var ticket = new AuthenticationTicket(principal, "DummyScheme");
         return Task.FromResult(AuthenticateResult.Success(ticket));

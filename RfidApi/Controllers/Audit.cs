@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -20,6 +21,7 @@ namespace RfidApi.Controllers
         }
 
         [HttpGet("items/{rfidTag}")]
+        [Authorize(Roles = "user,admin")]
         public async Task<IActionResult> Get(string rfidTag)
         {
             var item = await _context

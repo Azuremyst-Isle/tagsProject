@@ -20,6 +20,7 @@ public class ItemsController : ControllerBase
 
     // GET: api/items
     [HttpGet]
+    [Authorize(Roles = "user,admin")]
     public async Task<IActionResult> GetAll(
         [FromQuery] int page = 1,
         [FromQuery(Name = "page_size")] int pageSize = 20,
@@ -103,6 +104,7 @@ public class ItemsController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = "admin")]
     public async Task<IActionResult> Add([FromBody] CreateItemDto dto)
     {
         Item newItem = dto.MapDtoToItem();
@@ -143,6 +145,7 @@ public class ItemsController : ControllerBase
     }
 
     [HttpGet("{rfidTag}")]
+    [Authorize(Roles = "user,admin")]
     public async Task<IActionResult> GetByTag(string rfidTag)
     {
         var item = await _context
@@ -197,6 +200,7 @@ public class ItemsController : ControllerBase
     }
 
     [HttpPut("{rfidTag}/owner")]
+    [Authorize(Roles = "admin")]
     public async Task<IActionResult> AssignOwnership(string rfidTag, [FromBody] OwnerAssignDto dto)
     {
         if (!ModelState.IsValid)
@@ -243,6 +247,7 @@ public class ItemsController : ControllerBase
     }
 
     [HttpDelete("{rfidTag}")]
+    [Authorize(Roles = "admin")]
     public async Task<IActionResult> Delete(string rfidTag)
     {
         var item = await _context
@@ -275,6 +280,7 @@ public class ItemsController : ControllerBase
     }
 
     [HttpGet("{rfidTag}/events")]
+    [Authorize(Roles = "user,admin")]
     public async Task<IActionResult> GetAllEvents(
         string rfidTag,
         [FromQuery] int page = 1,
