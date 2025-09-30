@@ -245,9 +245,19 @@ public class ItemsController : ControllerBase
     [HttpDelete("{rfidTag}")]
     public async Task<IActionResult> Delete(string rfidTag)
     {
-        var item = await _context.item.FirstOrDefaultAsync(i => i.rfid_tag == rfidTag);
+        var item = await _context
+            .item.Include(i => i.OwnerUser)
+            .FirstOrDefaultAsync(i => i.rfid_tag == rfidTag);
         if (item == null)
             return NotFound(NotFoundProblem("Item not found"));
+        var deletedItemPayload = System.Text.Json.JsonSerializer.Serialize(
+            new
+            {
+                rfid_tag = item.rfid_tag,
+                name = item.name,
+                owner_email = item.OwnerUser?.Email,
+            }
+        );
         _context.item.Remove(item);
         await _context.SaveChangesAsync();
 
@@ -256,7 +266,7 @@ public class ItemsController : ControllerBase
             ItemId = item.Id,
             RfidTag = item.rfid_tag,
             EventType = EventTypes.Deleted,
-            EventPayload = null,
+            EventPayload = deletedItemPayload,
         };
         await _context.ItemEvents.AddAsync(newEvent);
         await _context.SaveChangesAsync();

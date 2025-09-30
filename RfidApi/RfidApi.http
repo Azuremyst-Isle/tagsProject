@@ -86,3 +86,10 @@ GET {{RfidApi_HostAddress}}/api/items?sort_by=name
 
 ### Get all items with name search
 GET {{RfidApi_HostAddress}}/api/items?search=Item
+
+### Get all items with name search, sort and filter
+GET {{RfidApi_HostAddress}}/api/items?search=Item&sort_by=last_updated&sort_order=desc&status=available
+
+### Get auth debug endpoint
+
+GET {{RfidApi_HostAddress}}/api/debug/auth
