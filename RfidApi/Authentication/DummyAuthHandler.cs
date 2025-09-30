@@ -25,7 +25,7 @@ public class DummyAuthHandler : AuthenticationHandler<AuthenticationSchemeOption
                 System.Security.Claims.ClaimTypes.Email,
                 "dummy@test.com"
             ),
-            new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.Role, "user"),
+            new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.Role, "admin"),
         };
         var identity = new System.Security.Claims.ClaimsIdentity(claims, "DummyScheme");
         var principal = new System.Security.Claims.ClaimsPrincipal(identity);

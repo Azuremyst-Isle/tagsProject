@@ -1,6 +1,6 @@
 @RfidApi_HostAddress = http://localhost:5000
 @rfidTag = 123
-@rfidTagNew = 125
+@rfidTagNew = 123
 
 ### Get all items
 GET {{RfidApi_HostAddress}}/api/items

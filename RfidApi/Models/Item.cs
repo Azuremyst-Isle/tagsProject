@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Globalization;
 using Microsoft.EntityFrameworkCore;
 
 namespace RfidApi.Models;
@@ -19,4 +20,6 @@ public class Item
     public int? OwnerUserId { get; set; } // Optional foreign key to Users table
     public Users? OwnerUser { get; set; } // Navigation property
     public DateTime last_updated { get; set; } = DateTime.UtcNow;
+
+    public DateTime last_signal { get; set; } = DateTime.UtcNow;
 }

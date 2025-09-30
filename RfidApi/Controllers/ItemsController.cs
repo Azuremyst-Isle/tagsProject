@@ -155,6 +155,7 @@ public class ItemsController : ControllerBase
     }
 
     [HttpPut("{rfidTag}")]
+    [Authorize(Roles = "admin")]
     public async Task<IActionResult> Update(string rfidTag, UpdateItemDto updates)
     {
         var item = await _context
@@ -229,6 +230,7 @@ public class ItemsController : ControllerBase
         item.OwnerUserId = user.Id;
         item.owner_name = user.Name;
         item.last_updated = DateTime.UtcNow;
+        item.last_signal = DateTime.UtcNow;
         await _context.SaveChangesAsync();
 
         ItemEvent newEvent = new ItemEvent

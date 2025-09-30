@@ -10,5 +10,6 @@ public record ItemDto(
     string? Certification_code,
     string? Owner_name,
     DateTime Last_updated,
-    string? Owner_email // Optional
+    string? Owner_email, // Optional
+    DateTime Last_signal
 );

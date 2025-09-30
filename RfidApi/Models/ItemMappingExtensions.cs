@@ -13,7 +13,8 @@ public static class ItemMappingExtensions
             item.certification_code,
             item.owner_name,
             item.last_updated,
-            item.OwnerUser?.Email // May be null if no owner
+            item.OwnerUser?.Email, // May be null if no owner
+            item.last_signal
         );
 
     public static Item MapDtoToItem(this CreateItemDto itemDto) =>
@@ -36,5 +37,6 @@ public static class ItemMappingExtensions
         item.certification_code = itemDto.CertificationCode ?? item.certification_code;
         item.owner_name = itemDto.OwnerName ?? item.owner_name;
         item.last_updated = DateTime.UtcNow;
+        item.last_signal = DateTime.UtcNow;
     }
 }
