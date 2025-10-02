@@ -20,7 +20,6 @@ public class ItemsController : ControllerBase
 
     // GET: api/items
     [HttpGet]
-    [Authorize(Roles = "user,admin")]
     public async Task<IActionResult> GetAll(
         [FromQuery] int page = 1,
         [FromQuery(Name = "page_size")] int pageSize = 20,
@@ -145,7 +144,6 @@ public class ItemsController : ControllerBase
     }
 
     [HttpGet("{rfidTag}")]
-    [Authorize(Roles = "user,admin")]
     public async Task<IActionResult> GetByTag(string rfidTag)
     {
         var item = await _context
@@ -282,7 +280,6 @@ public class ItemsController : ControllerBase
     }
 
     [HttpGet("{rfidTag}/events")]
-    [Authorize(Roles = "user,admin")]
     public async Task<IActionResult> GetAllEvents(
         string rfidTag,
         [FromQuery] int page = 1,
