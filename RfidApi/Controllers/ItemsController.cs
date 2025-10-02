@@ -316,4 +316,32 @@ public class ItemsController : ControllerBase
 
         return Ok(result);
     }
+
+    [HttpPost("{rfidTag}/signal")]
+    public async Task<ActionResult> UpdateSignal(string rfidTag)
+    {
+        var item = await _context.item.FirstOrDefaultAsync(i => i.rfid_tag == rfidTag);
+        if (item == null)
+            return NotFound(NotFoundProblem("Item not found"));
+
+        item.last_signal = DateTime.UtcNow;
+
+        var payload = System.Text.Json.JsonSerializer.Serialize(
+            new { last_signal = item.last_signal }
+        );
+
+        ItemEvent newEvent = new ItemEvent
+        {
+            ItemId = item.Id,
+            RfidTag = item.rfid_tag,
+            EventType = EventTypes.Signal,
+            EventPayload = payload,
+            ActorEmail = "System",
+        };
+
+        await _context.ItemEvents.AddAsync(newEvent);
+        await _context.SaveChangesAsync();
+
+        return Ok(item.MapItemToDto());
+    }
 }

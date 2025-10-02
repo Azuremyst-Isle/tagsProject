@@ -22,4 +22,5 @@ public static class EventTypes
     public const string Updated = "updated";
     public const string Deleted = "deleted";
     public const string OwnershipAssigned = "ownership_assigned";
+    public const string Signal = "signal";
 }

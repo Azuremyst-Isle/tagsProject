@@ -103,3 +103,6 @@ GET {{RfidApi_HostAddress}}/api/audit/items/315
 
 ### Get demo summary endpoint
 GET {{RfidApi_HostAddress}}/api/demo/summary
+
+### sent a signal endpoint
+POST {{RfidApi_HostAddress}}/api/items/{{rfidTag}}/signal
