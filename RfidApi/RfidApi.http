@@ -1,5 +1,5 @@
 @RfidApi_HostAddress = http://localhost:5000
-@rfidTag = 123
+@rfidTag = 101
 @rfidTagNew = 123
 
 ### Get all items
@@ -112,3 +112,9 @@ POST {{RfidApi_HostAddress}}/api/items/{{rfidTag}}/signal
 
 ### reset  endpoint
 POST {{RfidApi_HostAddress}}/api/demo/reset
+
+### synthetic events  endpoint
+POST {{RfidApi_HostAddress}}/api/demo/fill-events/{{rfidTag}}?number=5
+
+### Get audit csv download
+GET {{RfidApi_HostAddress}}/api/audit/items/{{rfidTag}}/csv
