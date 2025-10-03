@@ -1,0 +1,23 @@
+@RfidApi_HostAddress = http://localhost:5000
+@rfidTag = 101
+
+### reset  endpoint
+POST {{RfidApi_HostAddress}}/api/demo/reset
+
+### Get demo summary endpoint
+GET {{RfidApi_HostAddress}}/api/demo/summary
+
+### sent a signal endpoint
+POST {{RfidApi_HostAddress}}/api/items/{{rfidTag}}/signal
+
+### synthetic events  endpoint
+POST {{RfidApi_HostAddress}}/api/demo/fill-events/{{rfidTag}}?number=5
+
+### Get audit debug endpoint 
+GET {{RfidApi_HostAddress}}/api/audit/items/{{rfidTag}}
+
+### Get audit csv download
+GET {{RfidApi_HostAddress}}/api/audit/items/{{rfidTag}}/csv
+
+### Get all items with name search, sort and filter
+GET {{RfidApi_HostAddress}}/api/items?search=Item&sort_by=last_updated&sort_order=desc&status=available&page=1&page_size=5
