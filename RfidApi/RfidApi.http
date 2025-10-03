@@ -78,6 +78,9 @@ Content-Type: application/json
 ### Request an event log for an item
 GET {{RfidApi_HostAddress}}/api/items/{{rfidTagNew}}/events
 
+### Request an event log for an item
+GET {{RfidApi_HostAddress}}/api/items/{{rfidTag}}/events
+
 ### Request an paginated event log for an item
 GET {{RfidApi_HostAddress}}/api/items/{{rfidTagNew}}/events?page=1&page_size=5
 
@@ -106,3 +109,6 @@ GET {{RfidApi_HostAddress}}/api/demo/summary
 
 ### sent a signal endpoint
 POST {{RfidApi_HostAddress}}/api/items/{{rfidTag}}/signal
+
+### reset  endpoint
+POST {{RfidApi_HostAddress}}/api/demo/reset
