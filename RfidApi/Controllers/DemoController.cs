@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RfidApi.Data;
 using RfidApi.Models;
+using RfidApi.Models.Dtos;
 using static RfidApi.Errors.CustomErrorHandlers;
 
 namespace RfidApi.Controllers
@@ -20,10 +21,7 @@ namespace RfidApi.Controllers
             _context = context;
         }
 
-        // GET: api/demo/summary
-        [HttpGet("summary")]
-        [AllowAnonymous]
-        public async Task<IActionResult> Summary()
+        private async Task<object> GetSummaryAsync()
         {
             var ItemsQuery = _context.item.AsQueryable();
 
@@ -48,19 +46,25 @@ namespace RfidApi.Controllers
             var ownedItemCount = itemStats.Sum(s => s.Owned);
             var unownedItemCount = itemStats.Sum(s => s.Unowned);
 
-            return await Task.FromResult<IActionResult>(
-                Ok(
-                    new
-                    {
-                        total_items = itemCount,
-                        total_users = userCount,
-                        total_events = eventCount,
-                        items_with_owner = ownedItemCount,
-                        items_without_owner = unownedItemCount,
-                        items_online = OnlineItemsCount,
-                    }
-                )
-            );
+            return new
+            {
+                total_items = itemCount,
+                total_users = userCount,
+                total_events = eventCount,
+                items_with_owner = ownedItemCount,
+                items_without_owner = unownedItemCount,
+                items_online = OnlineItemsCount,
+            };
+        }
+
+        // GET: api/demo/summary
+        [HttpGet("summary")]
+        [AllowAnonymous]
+        public async Task<IActionResult> Summary()
+        {
+            var summary = await GetSummaryAsync();
+
+            return Ok(summary);
         }
 
         // POST: api/demo/reset
@@ -217,6 +221,94 @@ namespace RfidApi.Controllers
             await _context.SaveChangesAsync();
 
             return Ok(new { message = "Events Generated" });
+        }
+
+        [HttpPost("runbook")]
+        [Authorize(Roles = "admin")]
+        public async Task<IActionResult> Runbook()
+        {
+            // Build base URL from current request
+            var baseUrl = $"{Request.Scheme}://{Request.Host.Value}";
+            using var http = new HttpClient { BaseAddress = new Uri(baseUrl) };
+
+            // Forward Authorization header if present
+            if (
+                Request.Headers.TryGetValue("Authorization", out var auth)
+                && !string.IsNullOrEmpty(auth)
+            )
+            {
+                http.DefaultRequestHeaders.TryAddWithoutValidation(
+                    "Authorization",
+                    auth.ToString()
+                );
+            }
+
+            var resetResp = await http.PostAsync("/api/demo/reset", new StringContent(""));
+            if (!resetResp.IsSuccessStatusCode)
+            {
+                return StatusCode(
+                    (int)resetResp.StatusCode,
+                    new { message = "Failed to reset database" }
+                );
+            }
+
+            var rfidTag1 = "101"; // Assuming this tag exists after reset
+            var rfidTag2 = "102";
+
+            await http.PostAsync(
+                $"/api/demo/fill-events/{Uri.EscapeDataString(rfidTag1)}?number=5",
+                null
+            );
+            await http.PostAsync($"/api/items/{Uri.EscapeDataString(rfidTag1)}/signal", null);
+
+            await http.PostAsync(
+                $"/api/demo/fill-events/{Uri.EscapeDataString(rfidTag2)}?number=3",
+                null
+            );
+
+            var highlightResp = new List<object>(2);
+
+            foreach (var tag in new[] { rfidTag1, rfidTag2 })
+            {
+                var item = await _context
+                    .item.Include(i => i.OwnerUser)
+                    .FirstOrDefaultAsync(i => i.rfid_tag == tag);
+
+                var query = _context.ItemEvents.Where(e => e.RfidTag == tag).AsQueryable();
+
+                var totalItems = await query.CountAsync();
+                var events = await query
+                    .OrderByDescending(e => e.CreatedAt)
+                    .Take(5)
+                    .Select(e => new EventsDto
+                    {
+                        EventType = e.EventType,
+                        EventPayload = e.EventPayload,
+                        CreatedAt = e.CreatedAt,
+                    })
+                    .ToListAsync();
+
+                highlightResp.Add(new { item = item?.MapItemToDto(), events_last_five = events });
+            }
+
+            var summary = await GetSummaryAsync();
+
+            string[] downloadLinks =
+            {
+                $"/api/audit/items/{Uri.EscapeDataString(rfidTag1)}/CSV",
+                $"/api/audit/items/{Uri.EscapeDataString(rfidTag2)}/CSV",
+            };
+
+            // Implementation for runbook
+            return Ok(
+                new
+                {
+                    message = "Runbook Executed",
+                    summary,
+                    highlighted_items = highlightResp,
+                    download_links = downloadLinks,
+                }
+            );
         }
     }
 }
