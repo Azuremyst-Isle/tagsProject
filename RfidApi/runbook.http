@@ -24,3 +24,6 @@ GET {{RfidApi_HostAddress}}/api/items?search=Item&sort_by=last_updated&sort_orde
 
 ### Run runbook
 POST {{RfidApi_HostAddress}}/api/demo/runbook
+
+### smoke test runbook
+GET {{RfidApi_HostAddress}}/api/demo/smoke

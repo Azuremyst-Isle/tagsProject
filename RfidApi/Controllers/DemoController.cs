@@ -310,5 +310,23 @@ namespace RfidApi.Controllers
                 }
             );
         }
+
+        [HttpGet("smoke")]
+        public IActionResult Smoke()
+        {
+            return Ok(
+                new
+                {
+                    message = "Smoke Test",
+                    endpoints = new[]
+                    {
+                        "`GET /api/demo/summary`",
+                        "`GET /api/items?search=Item&sort_by=last_updated&sort_order=desc&status=available&page_size=5`",
+                        "`GET /api/audit/items/101`",
+                        "`GET /api/audit/items/102/csv`",
+                    },
+                }
+            );
+        }
     }
 }
