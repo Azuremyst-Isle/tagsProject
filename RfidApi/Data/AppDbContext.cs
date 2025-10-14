@@ -12,6 +12,8 @@ public class AppDbContext : DbContext
 
     public DbSet<Users> Users => Set<Users>();
 
+    public DbSet<Retailers> Retailers => Set<Retailers>();
+
     public DbSet<ItemEvent> ItemEvents => Set<ItemEvent>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
