@@ -25,4 +25,14 @@ public static class CustomErrorHandlers
             Detail = detail,
         };
     }
+
+    public static ProblemDetails ForbiddenProblem(string detail = "Retailer not accredited.")
+    {
+        return new ProblemDetails
+        {
+            Status = StatusCodes.Status403Forbidden,
+            Title = "Forbidden",
+            Detail = detail,
+        };
+    }
 }

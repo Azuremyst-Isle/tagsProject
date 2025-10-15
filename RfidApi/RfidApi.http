@@ -18,7 +18,8 @@ Content-Type: application/json
   "description": "Steel bezel",
   "status": "available",
   "certification_code": "PSA12345",
-  "owner_name": "John"
+  "owner_name": "John",
+  "retailer_id": 1
 }
 
 ### Update Item
@@ -118,3 +119,16 @@ POST {{RfidApi_HostAddress}}/api/demo/fill-events/{{rfidTag}}?number=5
 
 ### Get audit csv download
 GET {{RfidApi_HostAddress}}/api/audit/items/{{rfidTag}}/csv
+
+### create retailer
+POST {{RfidApi_HostAddress}}/api/retailers/register
+Content-Type: application/json
+
+{
+    "name": "Retailer Name",
+    "identifier": "Retailer Identifier",
+    "email": "retailer@example.com"
+}
+
+### get all retailers
+GET {{RfidApi_HostAddress}}/api/retailers

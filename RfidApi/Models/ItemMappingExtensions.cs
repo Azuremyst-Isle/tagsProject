@@ -26,6 +26,7 @@ public static class ItemMappingExtensions
             status = itemDto.Status,
             certification_code = itemDto.Certification_code,
             owner_name = itemDto.Owner_name,
+            RetailerId = itemDto.Retailer_id,
             last_updated = DateTime.UtcNow,
         };
 

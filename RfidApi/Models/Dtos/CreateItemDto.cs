@@ -8,5 +8,6 @@ public record CreateItemDto(
     string? Description,
     string Status,
     string? Certification_code,
-    string? Owner_name
+    string? Owner_name,
+    int Retailer_id
 );

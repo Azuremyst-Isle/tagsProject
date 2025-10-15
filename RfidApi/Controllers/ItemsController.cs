@@ -106,6 +106,15 @@ public class ItemsController : ControllerBase
     [Authorize(Roles = "admin")]
     public async Task<IActionResult> Add([FromBody] CreateItemDto dto)
     {
+        var retailer = await _context.Retailers.FirstOrDefaultAsync(r =>
+            r.Id == dto.Retailer_id && r.Accredited
+        );
+
+        if (retailer == null)
+        {
+            return StatusCode(StatusCodes.Status403Forbidden, ForbiddenProblem());
+        }
+
         Item newItem = dto.MapDtoToItem();
         await _context.item.AddAsync(newItem);
         try

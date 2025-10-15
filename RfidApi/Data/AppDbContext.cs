@@ -32,6 +32,13 @@ public class AppDbContext : DbContext
             .HasForeignKey(i => i.OwnerUserId)
             .OnDelete(DeleteBehavior.SetNull);
 
+        modelBuilder
+            .Entity<Item>()
+            .HasOne(i => i.Retailer)
+            .WithMany()
+            .HasForeignKey(i => i.RetailerId)
+            .OnDelete(DeleteBehavior.SetNull);
+
         modelBuilder.Entity<Item>().HasIndex(i => i.OwnerUserId);
 
         modelBuilder.Entity<Item>().ToTable("items");

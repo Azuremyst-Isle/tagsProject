@@ -19,6 +19,9 @@ public class Item
 
     public int? OwnerUserId { get; set; } // Optional foreign key to Users table
     public Users? OwnerUser { get; set; } // Navigation property
+
+    public int? RetailerId { get; set; }
+    public Retailers? Retailer { get; set; } // Navigation property
     public DateTime last_updated { get; set; } = DateTime.UtcNow;
 
     public DateTime last_signal { get; set; } = DateTime.UtcNow;

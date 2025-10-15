@@ -2,17 +2,20 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RfidApi.Data;
 
 #nullable disable
 
-namespace RfidApi.data.migrations
+namespace RfidApi.Data.migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251015172140_UpdateRetailerId")]
+    partial class UpdateRetailerId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.19");
@@ -187,8 +190,7 @@ namespace RfidApi.data.migrations
 
                     b.HasOne("RfidApi.Models.Retailers", "Retailer")
                         .WithMany()
-                        .HasForeignKey("RetailerId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .HasForeignKey("RetailerId");
 
                     b.Navigation("OwnerUser");
 
