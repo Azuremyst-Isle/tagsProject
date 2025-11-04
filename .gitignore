@@ -168,3 +168,6 @@ publish/
 RfidApi/rfid.db
 RfidApi/rfid.db-shm
 RfidApi/rfid.db-wal
+
+# VS Code settings
+.vscode/
