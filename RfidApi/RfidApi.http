@@ -82,6 +82,9 @@ GET {{RfidApi_HostAddress}}/api/items/{{rfidTagNew}}/events
 ### Request an event log for an item
 GET {{RfidApi_HostAddress}}/api/items/{{rfidTag}}/events
 
+### Request an event log for an item
+GET {{RfidApi_HostAddress}}/api/items/{{rfidTag}}/events?page=1&page_size=5
+
 ### Request an paginated event log for an item
 GET {{RfidApi_HostAddress}}/api/items/{{rfidTagNew}}/events?page=1&page_size=5
 

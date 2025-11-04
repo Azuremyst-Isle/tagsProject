@@ -41,6 +41,7 @@ namespace RfidApi.Controllers
 
             var userCount = await _context.Users.CountAsync();
             var eventCount = await _context.ItemEvents.CountAsync();
+            var retailerCount = await _context.Retailers.CountAsync();
 
             var itemCount = itemStats.Sum(s => s.Total);
             var ownedItemCount = itemStats.Sum(s => s.Owned);
@@ -54,6 +55,7 @@ namespace RfidApi.Controllers
                 items_with_owner = ownedItemCount,
                 items_without_owner = unownedItemCount,
                 items_online = OnlineItemsCount,
+                retailers = retailerCount,
             };
         }
 
