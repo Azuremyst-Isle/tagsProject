@@ -1,0 +1,137 @@
+@RfidApi_HostAddress = http://localhost:5000
+@rfidTag = 101
+@rfidTagNew = 123
+
+### Get all items
+GET {{RfidApi_HostAddress}}/api/items
+
+### Get single Item
+GET {{RfidApi_HostAddress}}/api/items/{{rfidTag}}
+
+### Create new Item
+POST {{RfidApi_HostAddress}}/api/items
+Content-Type: application/json
+
+{
+  "rfid_tag": "TESTNEW",
+  "name": "Rolex GMT",
+  "description": "Steel bezel",
+  "status": "available",
+  "certification_code": "PSA12345",
+  "owner_name": "John",
+  "retailer_id": 1
+}
+
+### Update Item
+PUT {{RfidApi_HostAddress}}/api/items/{{rfidTag}}
+Content-Type: application/json
+
+{
+  "name": "Updated Item",
+  "description": "Updated description",
+  "status": "available",
+  "certification_code": "CERT123",
+  "owner_name": "Alice"
+}
+
+### Delete Item
+DELETE {{RfidApi_HostAddress}}/api/items/{{rfidTagNew}}
+
+### Assign Item to User
+PUT {{RfidApi_HostAddress}}/api/items/{{rfidTagNew}}/owner
+Content-Type: application/json
+
+{
+  "Owner_email": "alice@example.com"
+}
+
+### Wrong assing
+PUT {{RfidApi_HostAddress}}/api/items/{{rfidTagNew}}/owner
+Content-Type: application/json
+
+{}
+  
+
+
+
+### Get all items with owner email filter
+GET {{RfidApi_HostAddress}}/api/items?owner_email=alice@example.com
+
+### Get all items with owner status filter
+GET {{RfidApi_HostAddress}}/api/items?status=available
+
+### Get all items with owner dates filter
+GET {{RfidApi_HostAddress}}/api/items?from_date=2025-09-01&to_date=2025-09-15
+
+### Get all users
+GET {{RfidApi_HostAddress}}/api/users
+
+### Create new User
+POST {{RfidApi_HostAddress}}/api/users
+Content-Type: application/json
+
+{
+  "email": "alice@example.com",
+  "name": "Alice",
+  "role": "user"
+}
+
+### Request an event log for an item
+GET {{RfidApi_HostAddress}}/api/items/{{rfidTagNew}}/events
+
+### Request an event log for an item
+GET {{RfidApi_HostAddress}}/api/items/{{rfidTag}}/events
+
+### Request an event log for an item
+GET {{RfidApi_HostAddress}}/api/items/{{rfidTag}}/events?page=1&page_size=5
+
+### Request an paginated event log for an item
+GET {{RfidApi_HostAddress}}/api/items/{{rfidTagNew}}/events?page=1&page_size=5
+
+### Get all items with owner status filter
+GET {{RfidApi_HostAddress}}/api/items?sort_by=name
+
+### Get all items with name search
+GET {{RfidApi_HostAddress}}/api/items?search=Item
+
+### Get all items with name search, sort and filter
+GET {{RfidApi_HostAddress}}/api/items?search=Item&sort_by=last_updated&sort_order=desc&status=available
+
+### Get auth debug endpoint
+
+GET {{RfidApi_HostAddress}}/api/debug/auth
+
+
+### Get audit debug endpoint
+GET {{RfidApi_HostAddress}}/api/audit/items/{{rfidTagNew}}
+
+### Get audit debug endpoint not found
+GET {{RfidApi_HostAddress}}/api/audit/items/315
+
+### Get demo summary endpoint
+GET {{RfidApi_HostAddress}}/api/demo/summary
+
+### sent a signal endpoint
+POST {{RfidApi_HostAddress}}/api/items/{{rfidTag}}/signal
+
+### reset  endpoint
+POST {{RfidApi_HostAddress}}/api/demo/reset
+
+### synthetic events  endpoint
+POST {{RfidApi_HostAddress}}/api/demo/fill-events/{{rfidTag}}?number=5
+
+### Get audit csv download
+GET {{RfidApi_HostAddress}}/api/audit/items/{{rfidTag}}/csv
+
+### create retailer
+POST {{RfidApi_HostAddress}}/api/retailers/register
+Content-Type: application/json
+
+{
+    "name": "Retailer Name",
+    "identifier": "Retailer Identifier",
+    "email": "retailer@example.com"
+}
+
+### get all retailers
+GET {{RfidApi_HostAddress}}/api/retailers

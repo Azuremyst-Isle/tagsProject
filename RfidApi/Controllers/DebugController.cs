@@ -1,0 +1,24 @@
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+
+namespace RfidApi.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class DebugController : ControllerBase
+    {
+        private static readonly string[] value = ["user"];
+
+        // GET: api/debug/auth
+        [HttpGet("auth")]
+        [Authorize]
+        public async Task<IActionResult> Get()
+        {
+            var email = User.FindFirstValue(ClaimTypes.Email) ?? User.Identity?.Name ?? "unknown";
+            var roles = User.FindAll(ClaimTypes.Role).Select(r => r.Value).ToArray();
+            return await Task.FromResult<IActionResult>(Ok(new { user = email, roles }));
+        }
+    }
+}
