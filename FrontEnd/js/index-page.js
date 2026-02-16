@@ -109,41 +109,6 @@ summaryBtn.addEventListener("click", async (e) => {
   }
 });
 
-const searchBtn = document.getElementById("searchBtn");
-const searchInput = document.getElementById("searchInput");
-searchBtn.addEventListener("click", async (e) => {
-  e.preventDefault();
-  const itemTerm = searchInput.value.trim();
-  if (!itemTerm) {
-    box.textContent = "Please enter a search term.";
-    return;
-  }
-  box.textContent = "Sending request...";
-  try {
-    const res = await fetch(
-      rootUrl +
-        apiPath +
-        "?search=" +
-        itemTerm +
-        "&sort_by=last_updated&sort_order=desc&status=available&page=1&page_size=5",
-      {
-        method: "GET",
-      },
-    );
-    const data = await res.json();
-    let content = `Status: ${res.status}\n`;
-    for (const key in data) {
-      const value =
-        typeof data[key] === "object" ? JSON.stringify(data[key]) : data[key];
-      content += `${key}: ${value}\n`;
-    }
-    box.textContent = content;
-  } catch (err) {
-    box.textContent = "Error: " + err;
-    console.error(err);
-  }
-});
-
 const runBtn = document.getElementById("runBtn");
 runBtn.addEventListener("click", async (e) => {
   e.preventDefault();
