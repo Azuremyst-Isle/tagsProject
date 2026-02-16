@@ -6,16 +6,16 @@
     <title>Main Dashboard</title>
   </head>
   <body>
-    <button id="resetBtn" type="button">Reset Demo</button>
-    <button id="summaryBtn" type="button">Summary Data</button>
-    <button id="runBtn" type="button">Run Runbook</button>
-    <button id="smokeBtn" type="button">Smoke Test</button>
+    <input id="rfidInput" type="text" placeholder="Enter RFID Tag" />
+    <button id="signalBtn" type="button">Get Signal</button>
+    <button id="synthBtn" type="button">Generate Events</button>
+    <button id="auditBtn" type="button">Audit items</button>
+    <button id="downloadBtn" type="button">Download Audit</button>
     <pre id="responseBox" style="margin-top: 1em; white-space: pre-wrap"></pre>
     <div>
       <canvas id="detailsChart" width="400" height="200"></canvas>
       <canvas id="ownerChart" width="400" height="200"></canvas>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script type="module" src="js/index-page.js"></script>
+    <script type="module" src="js/event-control-page.js"></script>
   </body>
 </html>
