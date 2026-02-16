@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Main Dashboard</title>
+  </head>
+  <body>
+    <input id="rfidInput" type="text" placeholder="Enter RFID Tag" />
+    <button id="signalBtn" type="button">Get Signal</button>
+    <button id="synthBtn" type="button">Generate Events</button>
+    <button id="auditBtn" type="button">Audit items</button>
+    <button id="downloadBtn" type="button">Download Audit</button>
+    <pre id="responseBox" style="margin-top: 1em; white-space: pre-wrap"></pre>
+    <div>
+      <canvas id="detailsChart" width="400" height="200"></canvas>
+      <canvas id="ownerChart" width="400" height="200"></canvas>
+    </div>
+    <script type="module" src="js/event-control-page.js"></script>
+  </body>
+</html>
