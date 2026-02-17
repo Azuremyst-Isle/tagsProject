@@ -1,8 +1,12 @@
+// Utility: Replace underscores with spaces and capitalize first letter
+function formatLabel(str) {
+  if (!str) return "";
+  const replaced = str.replace(/_/g, " ");
+  return replaced.charAt(0).toUpperCase() + replaced.slice(1);
+}
 import { BACKEND_URL } from "./config.js";
 const rootUrl = BACKEND_URL.root;
 const demoPath = BACKEND_URL.demo;
-const auditPath = BACKEND_URL.audit;
-const apiPath = BACKEND_URL.items;
 
 const btn = document.getElementById("resetBtn");
 const box = document.getElementById("responseBox");
@@ -49,7 +53,10 @@ summaryBtn.addEventListener("click", async (e) => {
     let summaryData = [];
     for (const key in data) {
       content += `${key}: ${data[key]}\n`;
-      summaryLabels.push(key);
+      if (key.includes("owner")) {
+        continue; // Skip owner-related keys for the bar chart
+      }
+      summaryLabels.push(formatLabel(key));
       summaryData.push(data[key]);
     }
     box.textContent = content;
@@ -69,13 +76,19 @@ summaryBtn.addEventListener("click", async (e) => {
         labels: summaryLabels,
         datasets: [
           {
-            label: "# of Votes",
+            label: "Summary Data",
             data: summaryData,
             borderWidth: 1,
           },
         ],
       },
       options: {
+        plugins: {
+          legend: {
+            display: false,
+          },
+        },
+        responsive: true,
         scales: {
           y: {
             beginAtZero: true,
@@ -84,18 +97,19 @@ summaryBtn.addEventListener("click", async (e) => {
       },
     });
     ownerChart = new Chart(ctx2, {
-      type: "bar",
+      type: "pie",
       data: {
-        labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
+        labels: ["With Owner", "Without Owner"],
         datasets: [
           {
-            label: "# of Votes",
-            data: [12, 19, 3, 5, 2, 3],
+            label: "# of Items",
+            data: [data.items_with_owner || 0, data.items_without_owner || 0],
             borderWidth: 1,
           },
         ],
       },
       options: {
+        responsive: true,
         scales: {
           y: {
             beginAtZero: true,
