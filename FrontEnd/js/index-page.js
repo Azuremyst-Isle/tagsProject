@@ -9,12 +9,12 @@ const rootUrl = BACKEND_URL.root;
 const demoPath = BACKEND_URL.demo;
 
 const btn = document.getElementById("resetBtn");
-const box = document.getElementById("responseBox");
+// const box = document.getElementById("responseBox");
 let detailsChart = null;
 let ownerChart = null;
 btn.addEventListener("click", async (e) => {
   e.preventDefault();
-  box.textContent = "Sending request...";
+  console.log("Sending request...");
   // Destroy chart if it exists
   if (detailsChart) {
     detailsChart.destroy();
@@ -29,9 +29,9 @@ btn.addEventListener("click", async (e) => {
       method: "POST",
     });
     const data = await res.json();
-    box.textContent = `Status: ${res.status}\nMessage: ${data.message}`;
+    console.log(`Status: ${res.status}\nMessage: ${data.message}`);
   } catch (err) {
-    box.textContent = "Error: " + err;
+    console.log("Error: " + err);
     console.error(err);
   }
 });
@@ -42,7 +42,7 @@ const ctx2 = document.getElementById("ownerChart");
 const summaryBtn = document.getElementById("summaryBtn");
 summaryBtn.addEventListener("click", async (e) => {
   e.preventDefault();
-  box.textContent = "Sending request...";
+  console.log("Sending request...");
   try {
     const res = await fetch(rootUrl + demoPath + "/summary", {
       method: "GET",
@@ -59,7 +59,7 @@ summaryBtn.addEventListener("click", async (e) => {
       summaryLabels.push(formatLabel(key));
       summaryData.push(data[key]);
     }
-    box.textContent = content;
+    console.log(content);
     // Update Chart
     // Chart.js example
     if (detailsChart) {
@@ -118,7 +118,7 @@ summaryBtn.addEventListener("click", async (e) => {
       },
     });
   } catch (err) {
-    box.textContent = "Error: " + err;
+    console.log("Error: " + err);
     console.error(err);
   }
 });
@@ -126,7 +126,7 @@ summaryBtn.addEventListener("click", async (e) => {
 const runBtn = document.getElementById("runBtn");
 runBtn.addEventListener("click", async (e) => {
   e.preventDefault();
-  box.textContent = "Sending request...";
+  console.log("Sending request...");
   try {
     const res = await fetch(rootUrl + demoPath + "/runbook", {
       method: "POST",
@@ -138,9 +138,9 @@ runBtn.addEventListener("click", async (e) => {
         typeof data[key] === "object" ? JSON.stringify(data[key]) : data[key];
       content += `${key}: ${value}\n`;
     }
-    box.textContent = content;
+    console.log(content);
   } catch (err) {
-    box.textContent = "Error: " + err;
+    console.log("Error: " + err);
     console.error(err);
   }
 });
@@ -148,7 +148,7 @@ runBtn.addEventListener("click", async (e) => {
 const smokeBtn = document.getElementById("smokeBtn");
 smokeBtn.addEventListener("click", async (e) => {
   e.preventDefault();
-  box.textContent = "Sending request...";
+  console.log("Sending request...");
   try {
     const res = await fetch(rootUrl + demoPath + "/smoke", {
       method: "GET",
@@ -158,9 +158,9 @@ smokeBtn.addEventListener("click", async (e) => {
     for (const key in data) {
       content += `${key}: ${data[key]}\n`;
     }
-    box.textContent = content;
+    console.log(content);
   } catch (err) {
-    box.textContent = "Error: " + err;
+    console.log("Error: " + err);
     console.error(err);
   }
 });
