@@ -4,6 +4,9 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>Main Dashboard</title>
+    <link rel="stylesheet" href="css/theme.css" />
+    <link rel="stylesheet" href="css/common.css" />
+    <link rel="stylesheet" href="css/index.css" />
   </head>
   <body>
     <button id="resetBtn" type="button">Reset Demo</button>
@@ -11,24 +14,6 @@
     <button id="runBtn" type="button">Run Runbook</button>
     <button id="smokeBtn" type="button">Smoke Test</button>
     <pre id="responseBox" style="margin-top: 1em; white-space: pre-wrap"></pre>
-    <style>
-      .chart-container {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 2em;
-        width: 100%;
-        max-width: 900px;
-        margin: 0 auto;
-      }
-      .chart-container canvas {
-        flex: 1 1 300px;
-        width: 100%;
-        height: 300px;
-        max-width: 100%;
-        min-width: 200px;
-        min-height: 200px;
-      }
-    </style>
     <div class="chart-container">
       <canvas id="detailsChart"></canvas>
       <canvas id="ownerChart"></canvas>
