@@ -4,6 +4,8 @@
   --primary-color: #3498db;
   --bg-color: #ffffff;
   --text-color: #333333;
+  --highlight1: #ffb300;
+  --highlight2: #ff8800;
 
   /* Typography */
   --font-main: "Inter", sans-serif;
