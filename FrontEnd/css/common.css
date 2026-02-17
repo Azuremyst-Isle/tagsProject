@@ -11,12 +11,12 @@ button {
     box-shadow 0.2s;
 }
 button:hover {
-  background: var(--highlight1);
+  background: #ffb300;
   color: #222;
   box-shadow: 0 2px 8px rgba(255, 179, 0, 0.15);
 }
 button:active {
-  background: --var(--highlight2);
+  background: #ff8800;
   color: #fff;
   box-shadow: 0 1px 4px rgba(255, 136, 0, 0.18);
 }
@@ -91,8 +91,11 @@ button:active {
   justify-content: center;
   width: 2em;
   height: 2em;
-  background: none;
-  border: none;
+  background: none !important;
+  color: inherit !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
   cursor: pointer;
   gap: 0.3em;
 }
@@ -119,12 +122,13 @@ button:active {
     width: 10em;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
     border-radius: 0.5em;
-    z-index: 1000;
+    z-index: 2000;
   }
   .navbar-links.active {
     display: flex;
   }
   .navbar-toggle {
-    display: flex;
+    display: flex !important;
+    z-index: 2100;
   }
 }
