@@ -10,7 +10,19 @@
   </head>
   <body>
     <header>
-      <!-- Header content goes here -->
+      <nav class="navbar">
+        <div class="navbar-brand">Tags Dashboard</div>
+        <button class="navbar-toggle" aria-label="Toggle navigation">
+          <span class="bar"></span>
+          <span class="bar"></span>
+          <span class="bar"></span>
+        </button>
+        <ul class="navbar-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="search.html">Search</a></li>
+          <li><a href="event-control.html">Event Control</a></li>
+        </ul>
+      </nav>
     </header>
     <main>
       <button id="resetBtn" type="button">Reset Demo</button>
@@ -31,5 +43,17 @@
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script type="module" src="js/index-page.js"></script>
+    <script>
+      // Responsive navbar toggle
+      document.addEventListener("DOMContentLoaded", function () {
+        const toggle = document.querySelector(".navbar-toggle");
+        const links = document.querySelector(".navbar-links");
+        if (toggle && links) {
+          toggle.addEventListener("click", function () {
+            links.classList.toggle("active");
+          });
+        }
+      });
+    </script>
   </body>
 </html>

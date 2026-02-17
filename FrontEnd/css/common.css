@@ -1,0 +1,67 @@
+/* Responsive Navbar Styles */
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #222;
+  color: #fff;
+  padding: 0.5em 1.5em;
+}
+.navbar-brand {
+  font-size: 1.3em;
+  font-weight: bold;
+}
+.navbar-links {
+  list-style: none;
+  display: flex;
+  gap: 1.5em;
+  margin: 0;
+  padding: 0;
+}
+.navbar-links li a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+.navbar-links li a:hover {
+  color: #ffb300;
+}
+.navbar-toggle {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  width: 2em;
+  height: 2em;
+  background: none;
+  border: none;
+  cursor: pointer;
+  gap: 0.3em;
+}
+.navbar-toggle .bar {
+  width: 100%;
+  height: 0.22em;
+  background: #fff;
+  border-radius: 2px;
+  transition: 0.3s;
+}
+@media (max-width: 700px) {
+  .navbar-links {
+    display: none;
+    position: absolute;
+    top: 3.5em;
+    right: 1.5em;
+    background: #222;
+    flex-direction: column;
+    width: 10em;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    border-radius: 0.5em;
+    z-index: 1000;
+  }
+  .navbar-links.active {
+    display: flex;
+  }
+  .navbar-toggle {
+    display: flex;
+  }
+}
