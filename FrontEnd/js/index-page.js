@@ -1,3 +1,7 @@
+import { BACKEND_URL } from "./config.js";
+const rootUrl = BACKEND_URL.root;
+const demoPath = BACKEND_URL.demo;
+
 // Utility: Replace underscores with spaces and capitalize first letter
 function formatLabel(str) {
   if (!str) return "";
@@ -16,37 +20,9 @@ function resetCharts() {
   }
 }
 
-import { BACKEND_URL } from "./config.js";
-const rootUrl = BACKEND_URL.root;
-const demoPath = BACKEND_URL.demo;
-
-const btn = document.getElementById("resetBtn");
-// const box = document.getElementById("responseBox");
-let detailsChart = null;
-let ownerChart = null;
-btn.addEventListener("click", async (e) => {
-  e.preventDefault();
-  console.log("Sending request...");
-  // Destroy chart if it exists
-  resetCharts();
-  try {
-    const res = await fetch(rootUrl + demoPath + "/reset", {
-      method: "POST",
-    });
-    const data = await res.json();
-    console.log(`Status: ${res.status}\nMessage: ${data.message}`);
-  } catch (err) {
-    console.log("Error: " + err);
-    console.error(err);
-  }
-});
-
-// Summary
-const ctx = document.getElementById("detailsChart");
-const ctx2 = document.getElementById("ownerChart");
-const summaryBtn = document.getElementById("summaryBtn");
-
 async function fetchAndPlotSummary() {
+  const ctx = document.getElementById("detailsChart");
+  const ctx2 = document.getElementById("ownerChart");
   console.log("Sending request...");
   const res = await fetch(rootUrl + demoPath + "/summary", {
     method: "GET",
@@ -123,6 +99,32 @@ async function fetchAndPlotSummary() {
   });
 }
 
+const btn = document.getElementById("resetBtn");
+// const box = document.getElementById("responseBox");
+let detailsChart = null;
+let ownerChart = null;
+btn.addEventListener("click", async (e) => {
+  e.preventDefault();
+  console.log("Sending request...");
+  // Destroy chart if it exists
+  resetCharts();
+  try {
+    const res = await fetch(rootUrl + demoPath + "/reset", {
+      method: "POST",
+    });
+    const data = await res.json();
+    console.log(`Status: ${res.status}\nMessage: ${data.message}`);
+    await fetchAndPlotSummary(); // Refresh summary after reset
+  } catch (err) {
+    console.log("Error: " + err);
+    console.error(err);
+  }
+});
+
+// Summary
+
+const summaryBtn = document.getElementById("summaryBtn");
+
 summaryBtn.addEventListener("click", async (e) => {
   e.preventDefault();
   try {
@@ -174,3 +176,10 @@ smokeBtn.addEventListener("click", async (e) => {
     console.error(err);
   }
 });
+
+try {
+  await fetchAndPlotSummary();
+} catch (err) {
+  console.log("Error: " + err);
+  console.error(err);
+}
