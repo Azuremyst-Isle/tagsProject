@@ -4,6 +4,18 @@ function formatLabel(str) {
   const replaced = str.replace(/_/g, " ");
   return replaced.charAt(0).toUpperCase() + replaced.slice(1);
 }
+
+function resetCharts() {
+  if (detailsChart) {
+    detailsChart.destroy();
+    detailsChart = null;
+  }
+  if (ownerChart) {
+    ownerChart.destroy();
+    ownerChart = null;
+  }
+}
+
 import { BACKEND_URL } from "./config.js";
 const rootUrl = BACKEND_URL.root;
 const demoPath = BACKEND_URL.demo;
@@ -16,14 +28,7 @@ btn.addEventListener("click", async (e) => {
   e.preventDefault();
   console.log("Sending request...");
   // Destroy chart if it exists
-  if (detailsChart) {
-    detailsChart.destroy();
-    detailsChart = null;
-  }
-  if (ownerChart) {
-    ownerChart.destroy();
-    ownerChart = null;
-  }
+  resetCharts();
   try {
     const res = await fetch(rootUrl + demoPath + "/reset", {
       method: "POST",
@@ -40,83 +45,88 @@ btn.addEventListener("click", async (e) => {
 const ctx = document.getElementById("detailsChart");
 const ctx2 = document.getElementById("ownerChart");
 const summaryBtn = document.getElementById("summaryBtn");
+
+async function fetchAndPlotSummary() {
+  console.log("Sending request...");
+  const res = await fetch(rootUrl + demoPath + "/summary", {
+    method: "GET",
+  });
+  const data = await res.json();
+  let content = `Status: ${res.status}\n`;
+  let summaryLabels = [];
+  let summaryData = [];
+  for (const key in data) {
+    content += `${key}: ${data[key]}\n`;
+    if (key.includes("owner")) {
+      continue; // Skip owner-related keys for the bar chart
+    }
+    summaryLabels.push(formatLabel(key));
+    summaryData.push(data[key]);
+  }
+  console.log(content);
+  // Update Chart
+  // Chart.js example
+  if (detailsChart) {
+    detailsChart.destroy();
+    detailsChart = null;
+  }
+  if (ownerChart) {
+    ownerChart.destroy();
+    ownerChart = null;
+  }
+  detailsChart = new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels: summaryLabels,
+      datasets: [
+        {
+          label: "Summary Data",
+          data: summaryData,
+          borderWidth: 1,
+        },
+      ],
+    },
+    options: {
+      plugins: {
+        legend: {
+          display: false,
+        },
+      },
+      responsive: true,
+      scales: {
+        y: {
+          beginAtZero: true,
+        },
+      },
+    },
+  });
+  ownerChart = new Chart(ctx2, {
+    type: "pie",
+    data: {
+      labels: ["With Owner", "Without Owner"],
+      datasets: [
+        {
+          label: "# of Items",
+          data: [data.items_with_owner || 0, data.items_without_owner || 0],
+          borderWidth: 1,
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      scales: {
+        y: {
+          beginAtZero: true,
+        },
+      },
+    },
+  });
+}
+
 summaryBtn.addEventListener("click", async (e) => {
   e.preventDefault();
-  console.log("Sending request...");
   try {
-    const res = await fetch(rootUrl + demoPath + "/summary", {
-      method: "GET",
-    });
-    const data = await res.json();
-    let content = `Status: ${res.status}\n`;
-    let summaryLabels = [];
-    let summaryData = [];
-    for (const key in data) {
-      content += `${key}: ${data[key]}\n`;
-      if (key.includes("owner")) {
-        continue; // Skip owner-related keys for the bar chart
-      }
-      summaryLabels.push(formatLabel(key));
-      summaryData.push(data[key]);
-    }
-    console.log(content);
-    // Update Chart
-    // Chart.js example
-    if (detailsChart) {
-      detailsChart.destroy();
-      detailsChart = null;
-    }
-    if (ownerChart) {
-      ownerChart.destroy();
-      ownerChart = null;
-    }
-    detailsChart = new Chart(ctx, {
-      type: "bar",
-      data: {
-        labels: summaryLabels,
-        datasets: [
-          {
-            label: "Summary Data",
-            data: summaryData,
-            borderWidth: 1,
-          },
-        ],
-      },
-      options: {
-        plugins: {
-          legend: {
-            display: false,
-          },
-        },
-        responsive: true,
-        scales: {
-          y: {
-            beginAtZero: true,
-          },
-        },
-      },
-    });
-    ownerChart = new Chart(ctx2, {
-      type: "pie",
-      data: {
-        labels: ["With Owner", "Without Owner"],
-        datasets: [
-          {
-            label: "# of Items",
-            data: [data.items_with_owner || 0, data.items_without_owner || 0],
-            borderWidth: 1,
-          },
-        ],
-      },
-      options: {
-        responsive: true,
-        scales: {
-          y: {
-            beginAtZero: true,
-          },
-        },
-      },
-    });
+    await fetchAndPlotSummary();
   } catch (err) {
     console.log("Error: " + err);
     console.error(err);
