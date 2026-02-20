@@ -4,13 +4,61 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>Main Dashboard</title>
+    <link rel="stylesheet" href="css/theme.css" />
+    <link rel="stylesheet" href="css/common.css" />
+    <link rel="stylesheet" href="css/index.css" />
   </head>
   <body>
-    <input id="searchInput" type="text" placeholder="Search" value="Item" />
-    <button id="searchBtn" type="button">Search</button>
-    <button id="runBtn" type="button">Run Runbook</button>
-    <button id="smokeBtn" type="button">Smoke Test</button>
-    <pre id="responseBox" style="margin-top: 1em; white-space: pre-wrap"></pre>
+    <header>
+      <nav class="navbar">
+        <div class="navbar-brand">Tags Dashboard</div>
+        <button class="navbar-toggle" aria-label="Toggle navigation">
+          <span class="bar"></span>
+          <span class="bar"></span>
+          <span class="bar"></span>
+        </button>
+        <ul class="navbar-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="search.html">Search</a></li>
+          <li><a href="event-control.html">Event Control</a></li>
+        </ul>
+      </nav>
+    </header>
+    <main>
+      <div class="card">
+        <h1>Search Tags</h1>
+        <p>
+          Use the search box and buttons below to interact with the tag data.
+        </p>
+      </div>
+      <div class="card">
+        <input id="searchInput" type="text" placeholder="Search" value="Item" />
+        <button id="searchBtn" type="button">Search</button>
+        <button id="runBtn" type="button">Run Runbook</button>
+        <button id="smokeBtn" type="button">Smoke Test</button>
+      </div>
+      <div class="data">
+        <pre
+          id="responseBox"
+          style="margin-top: 1em; white-space: pre-wrap"
+        ></pre>
+      </div>
+    </main>
+    <footer>
+      <!-- Footer content goes here -->
+    </footer>
     <script type="module" src="js/search-page.js"></script>
+    <script>
+      // Responsive navbar toggle
+      document.addEventListener("DOMContentLoaded", function () {
+        const toggle = document.querySelector(".navbar-toggle");
+        const links = document.querySelector(".navbar-links");
+        if (toggle && links) {
+          toggle.addEventListener("click", function () {
+            links.classList.toggle("active");
+          });
+        }
+      });
+    </script>
   </body>
 </html>
