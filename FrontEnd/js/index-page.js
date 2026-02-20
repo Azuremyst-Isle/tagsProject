@@ -69,6 +69,7 @@ async function fetchAndPlotSummary() {
         },
       },
       responsive: true,
+
       scales: {
         y: {
           beginAtZero: true,
@@ -90,11 +91,7 @@ async function fetchAndPlotSummary() {
     },
     options: {
       responsive: true,
-      scales: {
-        y: {
-          beginAtZero: true,
-        },
-      },
+      maintainAspectRatio: true,
     },
   });
 }
