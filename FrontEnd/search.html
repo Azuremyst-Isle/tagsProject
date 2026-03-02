@@ -32,7 +32,19 @@
         </p>
       </div>
       <div class="card">
-        <input id="searchInput" type="text" placeholder="Search" value="Item" />
+        <div class="search-region">
+          <select name="options" id="options">
+            <option value="Any">Any</option>
+            <option value="available">Available</option>
+            <option value="unavailable">Not Available</option>
+          </select>
+          <input
+            id="searchInput"
+            type="text"
+            placeholder="Search"
+            value="Item"
+          />
+        </div>
         <button id="searchBtn" type="button">Search</button>
       </div>
       <div class="data">

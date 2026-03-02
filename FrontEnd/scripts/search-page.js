@@ -20,7 +20,7 @@ function renderTable(items) {
     resultsDiv.innerHTML = "<div>No results found.</div>";
     return;
   }
-  let table = `<table class="search-table" style="width:100%; border-collapse:collapse;">`;
+  let table = `<table class="search-table" style="">`;
   table += `<thead><tr>
     <th>RFID Tag</th>
     <th>Name</th>
@@ -65,13 +65,15 @@ function renderPagination(page, total, pageSize) {
 async function doSearch(term, page = 1) {
   lastSearchTerm = term;
   currentPage = page;
+  const statusFilter = document.getElementById("options").value;
+  let statusQuery = statusFilter == "Any" ? "" : `status=${statusFilter}`;
   resultsDiv.textContent = "Sending request...";
   paginationDiv.innerHTML = "";
   try {
     const res = await fetch(
       rootUrl +
         apiPath +
-        `?search=${encodeURIComponent(term)}&sort_by=last_updated&sort_order=desc&status=available&page=${page}&page_size=${PAGE_SIZE}`,
+        `?search=${encodeURIComponent(term)}&sort_by=last_updated&sort_order=desc&${statusQuery}&page=${page}&page_size=${PAGE_SIZE}`,
       {
         method: "GET",
       },
@@ -96,4 +98,24 @@ searchBtn.addEventListener("click", (e) => {
   doSearch(itemTerm, 1);
 });
 
-// Results will only be shown after clicking the search button.
+// Dynamically resize select based on selected option
+window.addEventListener("DOMContentLoaded", function () {
+  const select = document.getElementById("options");
+  function resizeSelect() {
+    if (!select) return;
+    const temp = document.createElement("span");
+    temp.style.visibility = "hidden";
+    temp.style.position = "fixed";
+    temp.style.font = window.getComputedStyle(select).font;
+    temp.style.padding = window.getComputedStyle(select).padding;
+    temp.textContent = select.options[select.selectedIndex].text;
+    document.body.appendChild(temp);
+    // Add some extra space for the dropdown arrow
+    select.style.width = temp.offsetWidth + 36 + "px";
+    document.body.removeChild(temp);
+  }
+  if (select) {
+    resizeSelect();
+    select.addEventListener("change", resizeSelect);
+  }
+});
