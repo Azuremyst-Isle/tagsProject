@@ -31,6 +31,8 @@ function createSortOptions(options) {
     sortOptions += `<option value="${option}">${formatLabel(option)}</option>`;
   }
   sortOptions += `</select>`;
+  // Add sort order select
+  sortOptions += ` <label for="sortOrder">Order:</label><select id="sortOrder"><option value="asc">Ascending</option><option value="desc">Descending</option></select>`;
   return sortOptions;
 }
 
@@ -59,18 +61,20 @@ function renderTable(items) {
   table += `</tbody></table>`;
   resultsDiv.innerHTML = sortOptions + table;
 
-  // Add event listener for sortOptions
+  // Add event listeners for sortOptions and sortOrder
   const sortSelect = document.getElementById("sortOptions");
+  const orderSelect = document.getElementById("sortOrder");
   if (sortSelect) {
     sortSelect.value = lastSortBy;
     sortSelect.addEventListener("change", function () {
       lastSortBy = sortSelect.value;
-      // Toggle sort order if same field, else reset to desc
-      if (lastSortBy === lastSortBy) {
-        lastSortOrder = lastSortOrder === "desc" ? "asc" : "desc";
-      } else {
-        lastSortOrder = "desc";
-      }
+      doSearch(lastSearchTerm, 1, lastSortBy, lastSortOrder);
+    });
+  }
+  if (orderSelect) {
+    orderSelect.value = lastSortOrder;
+    orderSelect.addEventListener("change", function () {
+      lastSortOrder = orderSelect.value;
       doSearch(lastSearchTerm, 1, lastSortBy, lastSortOrder);
     });
   }
