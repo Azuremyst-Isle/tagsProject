@@ -1,13 +1,7 @@
 import { BACKEND_URL } from "./config.js";
+import { formatLabel } from "./utils.js";
 const rootUrl = BACKEND_URL.root;
 const demoPath = BACKEND_URL.demo;
-
-// Utility: Replace underscores with spaces and capitalize first letter
-function formatLabel(str) {
-  if (!str) return "";
-  const replaced = str.replace(/_/g, " ");
-  return replaced.charAt(0).toUpperCase() + replaced.slice(1);
-}
 
 function resetCharts() {
   if (detailsChart) {
