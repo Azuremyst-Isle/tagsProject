@@ -1,7 +1,6 @@
 import { BACKEND_URL } from "./config.js";
+import { formatLabel } from "./utils.js";
 const rootUrl = BACKEND_URL.root;
-const demoPath = BACKEND_URL.demo;
-const auditPath = BACKEND_URL.audit;
 const apiPath = BACKEND_URL.items;
 
 const resultsDiv = document.getElementById("results");
@@ -12,30 +11,41 @@ const searchInput = document.getElementById("searchInput");
 
 let currentPage = 1;
 let lastSearchTerm = "";
+let lastSortBy = "last_updated";
+let lastSortOrder = "desc";
 let totalPages = 1;
 const PAGE_SIZE = 5;
 
-const sortOptions = `<label for="sortOptions">Sort by:</label>
-          <select name="sortBy" id="sortOptions">
-            <option value="Any">Any</option>
-            <option value="available">Available</option>
-            <option value="unavailable">Not Available</option>
-          </select>`;
+const tableHeaders = [
+  "rfid_tag",
+  "name",
+  "description",
+  "status",
+  "last_updated",
+  "last_signal",
+];
+
+function createSortOptions(options) {
+  let sortOptions = `<label for="sortOptions">Sort by:</label><select id="sortOptions">`;
+  for (const option of options) {
+    sortOptions += `<option value="${option}">${formatLabel(option)}</option>`;
+  }
+  sortOptions += `</select>`;
+  return sortOptions;
+}
 
 function renderTable(items) {
   if (!items || items.length === 0) {
     resultsDiv.innerHTML = "<div>No results found.</div>";
     return;
   }
+  const sortOptions = createSortOptions(tableHeaders);
   let table = `<table class="search-table" style="">`;
-  table += `<thead><tr>
-    <th>RFID Tag</th>
-    <th>Name</th>
-    <th>Description</th>
-    <th>Status</th>
-    <th>Last Updated</th>
-    <th>Last Signal</th>
-  </tr></thead><tbody>`;
+  table += `<thead><tr>`;
+  for (const header of tableHeaders) {
+    table += `<th>${formatLabel(header)}</th>`;
+  }
+  table += `</tr></thead><tbody>`;
   for (const item of items) {
     table += `<tr>
       <td>${item.rfid_tag ?? ""}</td>
@@ -47,7 +57,23 @@ function renderTable(items) {
     </tr>`;
   }
   table += `</tbody></table>`;
-  resultsDiv.innerHTML = table + sortOptions;
+  resultsDiv.innerHTML = sortOptions + table;
+
+  // Add event listener for sortOptions
+  const sortSelect = document.getElementById("sortOptions");
+  if (sortSelect) {
+    sortSelect.value = lastSortBy;
+    sortSelect.addEventListener("change", function () {
+      lastSortBy = sortSelect.value;
+      // Toggle sort order if same field, else reset to desc
+      if (lastSortBy === lastSortBy) {
+        lastSortOrder = lastSortOrder === "desc" ? "asc" : "desc";
+      } else {
+        lastSortOrder = "desc";
+      }
+      doSearch(lastSearchTerm, 1, lastSortBy, lastSortOrder);
+    });
+  }
 }
 
 function renderPagination(page, total, pageSize) {
@@ -69,9 +95,16 @@ function renderPagination(page, total, pageSize) {
   paginationDiv.appendChild(nextBtn);
 }
 
-async function doSearch(term, page = 1) {
+async function doSearch(
+  term,
+  page = 1,
+  sortBy = lastSortBy,
+  sortOrder = lastSortOrder,
+) {
   lastSearchTerm = term;
   currentPage = page;
+  lastSortBy = sortBy;
+  lastSortOrder = sortOrder;
   const statusFilter = document.getElementById("options").value;
   let statusQuery = statusFilter == "Any" ? "" : `status=${statusFilter}`;
   resultsDiv.textContent = "Sending request...";
@@ -80,7 +113,7 @@ async function doSearch(term, page = 1) {
     const res = await fetch(
       rootUrl +
         apiPath +
-        `?search=${encodeURIComponent(term)}&sort_by=last_updated&sort_order=desc&${statusQuery}&page=${page}&page_size=${PAGE_SIZE}`,
+        `?search=${encodeURIComponent(term)}&sort_by=${encodeURIComponent(sortBy)}&sort_order=${encodeURIComponent(sortOrder)}&${statusQuery}&page=${page}&page_size=${PAGE_SIZE}`,
       {
         method: "GET",
       },
@@ -102,7 +135,7 @@ searchBtn.addEventListener("click", (e) => {
     paginationDiv.innerHTML = "";
     return;
   }
-  doSearch(itemTerm, 1);
+  doSearch(itemTerm, 1, lastSortBy, lastSortOrder);
 });
 
 // Dynamically resize select based on selected option
