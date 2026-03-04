@@ -1,0 +1,8 @@
+.form-section {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-section.card {
+  align-items: stretch;
+}
