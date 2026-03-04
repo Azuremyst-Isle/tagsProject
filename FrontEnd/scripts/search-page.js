@@ -15,6 +15,13 @@ let lastSearchTerm = "";
 let totalPages = 1;
 const PAGE_SIZE = 5;
 
+const sortOptions = `<label for="sortOptions">Sort by:</label>
+          <select name="sortBy" id="sortOptions">
+            <option value="Any">Any</option>
+            <option value="available">Available</option>
+            <option value="unavailable">Not Available</option>
+          </select>`;
+
 function renderTable(items) {
   if (!items || items.length === 0) {
     resultsDiv.innerHTML = "<div>No results found.</div>";
@@ -40,7 +47,7 @@ function renderTable(items) {
     </tr>`;
   }
   table += `</tbody></table>`;
-  resultsDiv.innerHTML = table;
+  resultsDiv.innerHTML = table + sortOptions;
 }
 
 function renderPagination(page, total, pageSize) {
