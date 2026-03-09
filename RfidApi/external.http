@@ -1,0 +1,15 @@
+@RfidApi_HostAddress = https://alfa33333.bsite.net
+
+### Create new Item
+POST {{RfidApi_HostAddress}}/api/items
+Content-Type: application/json
+
+{
+  "rfid_tag": "TESTNEW",
+  "name": "Rolex GMT",
+  "description": "Steel bezel",
+  "status": "available",
+  "certification_code": "PSA12345",
+  "owner_name": "John",
+  "retailer_id": 1
+}
