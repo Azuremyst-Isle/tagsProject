@@ -36,6 +36,7 @@ function renderTable(items) {
   for (const header of tableHeaders) {
     table += `<th>${formatLabel(header)}</th>`;
   }
+  table += `<th>Action</th>`;
   table += `</tr></thead><tbody>`;
   for (const item of items) {
     table += `<tr>
@@ -48,6 +49,7 @@ function renderTable(items) {
       <td>${item.owner_email ?? ""}</td>
       <td>${item.last_updated ? new Date(item.last_updated).toLocaleString() : ""}</td>
       <td>${item.last_signal ? new Date(item.last_signal).toLocaleString() : ""}</td>
+      <td><button class="delete-btn" data-rfid="${item.rfid_tag}">Delete</button></td>
     </tr>`;
   }
   table += `</tbody></table>`;
@@ -68,6 +70,17 @@ function renderTable(items) {
     orderSelect.addEventListener("change", function () {
       lastSortOrder = orderSelect.value;
       fetchItems(1, lastSortBy, lastSortOrder);
+    });
+  }
+
+  // Event delegation for delete buttons
+  const tableElem = resultsDiv.querySelector("table");
+  if (tableElem) {
+    tableElem.addEventListener("click", function (e) {
+      if (e.target && e.target.classList.contains("delete-btn")) {
+        const rfid = e.target.getAttribute("data-rfid");
+        deleteItem(rfid);
+      }
     });
   }
 }
@@ -112,6 +125,33 @@ async function fetchItems(
     console.error(err);
   }
 }
+
+async function deleteItem(rfidTag) {
+  if (
+    !confirm(`Are you sure you want to delete item with RFID tag ${rfidTag}?`)
+  ) {
+    return;
+  }
+  // Implement the actual deletion logic here
+  try {
+    const res = await fetch(
+      `${rootUrl}${apiPath}/${encodeURIComponent(rfidTag)}`,
+      { method: "DELETE" },
+    );
+    if (res.ok) {
+      alert(`Item with RFID tag ${rfidTag} deleted successfully.`);
+      fetchItems(currentPage, lastSortBy, lastSortOrder); // Refresh the list
+    } else {
+      const errorData = await res.json();
+      alert(`Failed to delete item: ${errorData.message || res.statusText}`);
+    }
+  } catch (err) {
+    resultsDiv.textContent = "Error: " + err;
+    console.error(err);
+  }
+}
+
+
 
 window.addEventListener("DOMContentLoaded", function () {
   fetchItems(1);
