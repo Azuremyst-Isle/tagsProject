@@ -1,5 +1,5 @@
 import { BACKEND_URL } from "./config.js";
-import { formatLabel } from "./utils.js";
+import { formatLabel, createSortOptions, renderPagination } from "./utils.js";
 const rootUrl = BACKEND_URL.root;
 const apiPath = BACKEND_URL.items;
 
@@ -24,17 +24,6 @@ const tableHeaders = [
   "last_updated",
   "last_signal",
 ];
-
-function createSortOptions(options) {
-  let sortOptions = `<label for="sortOptions">Sort by:</label><select id="sortOptions">`;
-  for (const option of options) {
-    sortOptions += `<option value="${option}">${formatLabel(option)}</option>`;
-  }
-  sortOptions += `</select>`;
-  // Add sort order select
-  sortOptions += ` <label for="sortOrder">Order:</label><select id="sortOrder"><option value="asc">Ascending</option><option value="desc">Descending</option></select>`;
-  return sortOptions;
-}
 
 function renderTable(items) {
   if (!items || items.length === 0) {
@@ -80,25 +69,6 @@ function renderTable(items) {
   }
 }
 
-function renderPagination(page, total, pageSize) {
-  paginationDiv.innerHTML = "";
-  totalPages = Math.ceil(total / pageSize);
-  if (totalPages <= 1) return;
-  const prevBtn = document.createElement("button");
-  prevBtn.textContent = "Previous";
-  prevBtn.disabled = page <= 1;
-  prevBtn.onclick = () => doSearch(lastSearchTerm, page - 1);
-  const nextBtn = document.createElement("button");
-  nextBtn.textContent = "Next";
-  nextBtn.disabled = page >= totalPages;
-  nextBtn.onclick = () => doSearch(lastSearchTerm, page + 1);
-  const pageInfo = document.createElement("span");
-  pageInfo.textContent = `Page ${page} of ${totalPages}`;
-  paginationDiv.appendChild(prevBtn);
-  paginationDiv.appendChild(pageInfo);
-  paginationDiv.appendChild(nextBtn);
-}
-
 async function doSearch(
   term,
   page = 1,
@@ -124,7 +94,15 @@ async function doSearch(
     );
     const data = await res.json();
     renderTable(data.items);
-    renderPagination(data.page, data.total, data.page_size);
+    renderPagination(
+      data.page,
+      data.total,
+      data.page_size,
+      totalPages,
+      paginationDiv,
+      doSearch,
+      lastSearchTerm,
+    );
   } catch (err) {
     resultsDiv.textContent = "Error: " + err;
     console.error(err);
