@@ -28,7 +28,7 @@ function renderTable(items) {
     resultsDiv.innerHTML = "<div>No items found.</div>";
     return;
   }
-  let table = `<table class="item-table">`;
+  let table = `<table class="search-table">`;
   table += `<thead><tr>`;
   for (const header of tableHeaders) {
     table += `<th>${formatLabel(header)}</th>`;
