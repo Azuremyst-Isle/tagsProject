@@ -6,7 +6,7 @@
     <title>Main Dashboard</title>
     <link rel="stylesheet" href="css/theme.css" />
     <link rel="stylesheet" href="css/common.css" />
-    <link rel="stylesheet" href="css/index.css" />
+    <link rel="stylesheet" href="css/search.css" />
   </head>
   <body>
     <header>
@@ -21,45 +21,23 @@
           <li><a href="index.html">Home</a></li>
           <li><a href="new-tag.html">New Tag</a></li>
           <li><a href="search.html">Search</a></li>
-          <li><a href="item-control.html">Item Control</a></li>
           <li><a href="event-control.html">Event Control</a></li>
         </ul>
       </nav>
     </header>
     <main>
       <div class="card">
-        <h1>Welcome to the Tags Dashboard</h1>
-        <p>
-          This dashboard provides insights into resource tagging across your
-          environment. Use the buttons below to interact with the data and
-          explore various aspects of your tags.
-        </p>
+        <h2>Item Control</h2>
       </div>
-      <div class="card">
-        <div>
-          <button id="resetBtn" type="button">Reset Demo</button>
-          <button id="summaryBtn" type="button">Summary Data</button>
-          <button id="runBtn" type="button">Run Runbook</button>
-          <button id="smokeBtn" type="button">Smoke Test</button>
-        </div>
-      </div>
-
       <div class="data">
-        <pre
-          id="responseBox"
-          style="margin-top: 1em; white-space: pre-wrap"
-        ></pre>
-        <div class="chart-container">
-          <canvas id="detailsChart"></canvas>
-          <canvas id="ownerChart"></canvas>
-        </div>
+        <div id="results"></div>
+        <div id="pagination" style="margin-top: 1em"></div>
       </div>
     </main>
     <footer>
       <!-- Footer content goes here -->
     </footer>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script type="module" src="./scripts/index-page.js"></script>
+    <script type="module" src="./scripts/item-control.js"></script>
     <script>
       // Responsive navbar toggle
       document.addEventListener("DOMContentLoaded", function () {
