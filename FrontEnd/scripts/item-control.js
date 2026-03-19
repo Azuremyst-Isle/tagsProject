@@ -12,6 +12,7 @@ let currentPage = 1;
 let totalPages = 1;
 let lastSortBy = "last_updated";
 let lastSortOrder = "desc";
+let itemsMap = {};
 
 const tableHeaders = [
   "rfid_tag",
@@ -25,15 +26,27 @@ const tableHeaders = [
   "last_signal",
 ];
 
+const displayHeaders = [
+  "rfid_tag",
+  "name",
+  "status",
+  "last_updated",
+  "last_signal",
+];
+
 function renderTable(items) {
   if (!items || items.length === 0) {
     resultsDiv.innerHTML = "<div>No items found.</div>";
     return;
   }
-  const sortOptions = createSortOptions(tableHeaders);
+  itemsMap = {};
+  for (const item of items) {
+    itemsMap[item.rfid_tag] = item;
+  }
+  const sortOptions = createSortOptions(displayHeaders);
   let table = `<table class="search-table">`;
   table += `<thead><tr>`;
-  for (const header of tableHeaders) {
+  for (const header of displayHeaders) {
     table += `<th>${formatLabel(header)}</th>`;
   }
   table += `<th>Action</th>`;
@@ -42,14 +55,13 @@ function renderTable(items) {
     table += `<tr>
       <td>${item.rfid_tag ?? ""}</td>
       <td>${item.name ?? ""}</td>
-      <td>${item.description ?? ""}</td>
       <td>${item.status ?? ""}</td>
-      <td>${item.certification_code ?? ""}</td>
-      <td>${item.owner_name ?? ""}</td>
-      <td>${item.owner_email ?? ""}</td>
       <td>${item.last_updated ? new Date(item.last_updated).toLocaleString() : ""}</td>
       <td>${item.last_signal ? new Date(item.last_signal).toLocaleString() : ""}</td>
-      <td><button class="delete-btn" data-rfid="${item.rfid_tag}">Delete</button></td>
+      <td>
+        <button class="view-btn" data-rfid="${item.rfid_tag}">View</button>
+        <button class="delete-btn" data-rfid="${item.rfid_tag}">Delete</button>
+      </td>
     </tr>`;
   }
   table += `</tbody></table>`;
@@ -73,13 +85,17 @@ function renderTable(items) {
     });
   }
 
-  // Event delegation for delete buttons
+  // Event delegation for delete and view buttons
   const tableElem = resultsDiv.querySelector("table");
   if (tableElem) {
     tableElem.addEventListener("click", function (e) {
       if (e.target && e.target.classList.contains("delete-btn")) {
         const rfid = e.target.getAttribute("data-rfid");
         deleteItem(rfid);
+      }
+      if (e.target && e.target.classList.contains("view-btn")) {
+        const rfid = e.target.getAttribute("data-rfid");
+        showItemModal(itemsMap[rfid]);
       }
     });
   }
@@ -151,8 +167,61 @@ async function deleteItem(rfidTag) {
   }
 }
 
+function injectModal() {
+  if (document.getElementById("itemModal")) return;
+  const modal = document.createElement("div");
+  modal.id = "itemModal";
+  modal.className = "modal-overlay";
+  modal.style.display = "none";
+  modal.innerHTML = `
+    <div class="modal-card card">
+      <button class="modal-close" id="modalCloseBtn">&times;</button>
+      <h2>Item Details</h2>
+      <div class="modal-fields" id="modalFields"></div>
+    </div>
+  `;
+  document.body.appendChild(modal);
+  document
+    .getElementById("modalCloseBtn")
+    .addEventListener("click", closeModal);
+  modal.addEventListener("click", function (e) {
+    if (e.target === modal) closeModal();
+  });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") closeModal();
+  });
+}
 
+function closeModal() {
+  const modal = document.getElementById("itemModal");
+  if (modal) modal.style.display = "none";
+}
+
+function showItemModal(item) {
+  const modal = document.getElementById("itemModal");
+  if (!modal) return;
+  const fieldsDiv = document.getElementById("modalFields");
+  let html = "";
+  for (const key of tableHeaders) {
+    let value = item[key] ?? "";
+    if ((key === "last_updated" || key === "last_signal") && value) {
+      value = new Date(value).toLocaleString();
+    }
+    html += `
+      <div class="modal-field">
+        <label>${formatLabel(key)}</label>
+        <span>${value}</span>
+      </div>`;
+  }
+  html += `
+    <div class="modal-actions">
+      <a class="edit-btn" href="edit-tag.html?rfid=${encodeURIComponent(item.rfid_tag)}">Edit</a>
+    </div>`;
+  fieldsDiv.innerHTML = html;
+  modal.style.display = "flex";
+}
 
 window.addEventListener("DOMContentLoaded", function () {
+  injectModal();
   fetchItems(1);
 });

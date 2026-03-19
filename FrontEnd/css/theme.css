@@ -8,6 +8,7 @@
   --enhanced-text: #fff;
   --highlight1: #ffb300;
   --highlight2: #ff8800;
+  --danger-color: #ff4d4d;
 
   /* Typography */
   --font-main: "Inter", sans-serif;
@@ -20,6 +21,7 @@
   --text-color: #f5f5f5;
   --enhanced-bg: #222;
   --enhanced-text: #fff;
+  --danger-color: #ff4d4d;
 }
 
 body {

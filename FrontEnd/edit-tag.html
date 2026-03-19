@@ -3,11 +3,10 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Main Dashboard</title>
+    <title>Edit Item</title>
     <link rel="stylesheet" href="css/theme.css" />
     <link rel="stylesheet" href="css/common.css" />
-    <link rel="stylesheet" href="css/search.css" />
-    <link rel="stylesheet" href="css/item-control.css" />
+    <link rel="stylesheet" href="css/edit-tag.css" />
   </head>
   <body>
     <header>
@@ -27,21 +26,44 @@
       </nav>
     </header>
     <main>
-      <div class="card">
-        <h2>Item Control</h2>
-      </div>
-      <div class="data">
-        <div id="results"></div>
-        <div
-          id="pagination"
-          style="margin-top: 1em; display: flex; gap: 1em"
-        ></div>
-      </div>
+      <section class="form-section card">
+        <h2>Edit Item</h2>
+        <form id="editTagForm" class="form-section">
+          <label for="rfid_tag">RFID Tag</label>
+          <input type="text" id="rfid_tag" name="rfid_tag" readonly />
+
+          <label for="name">Name</label>
+          <input type="text" id="name" name="name" required />
+
+          <label for="description">Description</label>
+          <input type="text" id="description" name="description" required />
+
+          <label for="status">Status</label>
+          <select id="status" name="status" required>
+            <option value="available">Available</option>
+            <option value="unavailable">Unavailable</option>
+          </select>
+
+          <label for="certification_code">Certification Code</label>
+          <input
+            type="text"
+            id="certification_code"
+            name="certification_code"
+            required
+          />
+
+          <label for="owner_name">Owner Name</label>
+          <input type="text" id="owner_name" name="owner_name" required />
+
+          <button type="submit">Save Changes</button>
+        </form>
+        <div id="formMessage"></div>
+      </section>
     </main>
     <footer>
       <!-- Footer content goes here -->
     </footer>
-    <script type="module" src="./scripts/item-control.js"></script>
+    <script type="module" src="./scripts/edit-tag.js"></script>
     <script>
       // Responsive navbar toggle
       document.addEventListener("DOMContentLoaded", function () {
