@@ -26,6 +26,14 @@ const tableHeaders = [
   "last_signal",
 ];
 
+const displayHeaders = [
+  "rfid_tag",
+  "name",
+  "status",
+  "last_updated",
+  "last_signal",
+];
+
 function renderTable(items) {
   if (!items || items.length === 0) {
     resultsDiv.innerHTML = "<div>No items found.</div>";
@@ -35,10 +43,10 @@ function renderTable(items) {
   for (const item of items) {
     itemsMap[item.rfid_tag] = item;
   }
-  const sortOptions = createSortOptions(tableHeaders);
+  const sortOptions = createSortOptions(displayHeaders);
   let table = `<table class="search-table">`;
   table += `<thead><tr>`;
-  for (const header of tableHeaders) {
+  for (const header of displayHeaders) {
     table += `<th>${formatLabel(header)}</th>`;
   }
   table += `<th>Action</th>`;
@@ -47,11 +55,7 @@ function renderTable(items) {
     table += `<tr>
       <td>${item.rfid_tag ?? ""}</td>
       <td>${item.name ?? ""}</td>
-      <td>${item.description ?? ""}</td>
       <td>${item.status ?? ""}</td>
-      <td>${item.certification_code ?? ""}</td>
-      <td>${item.owner_name ?? ""}</td>
-      <td>${item.owner_email ?? ""}</td>
       <td>${item.last_updated ? new Date(item.last_updated).toLocaleString() : ""}</td>
       <td>${item.last_signal ? new Date(item.last_signal).toLocaleString() : ""}</td>
       <td>

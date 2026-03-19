@@ -102,3 +102,10 @@
   opacity: 0.85;
   color: #fff;
 }
+
+/* .search-table td {
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+} */
