@@ -209,6 +209,10 @@ function showItemModal(item) {
         <span>${value}</span>
       </div>`;
   }
+  html += `
+    <div class="modal-actions">
+      <a class="edit-btn" href="edit-tag.html?rfid=${encodeURIComponent(item.rfid_tag)}">Edit</a>
+    </div>`;
   fieldsDiv.innerHTML = html;
   modal.style.display = "flex";
 }
