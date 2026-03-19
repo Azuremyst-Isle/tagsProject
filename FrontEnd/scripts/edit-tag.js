@@ -62,6 +62,9 @@ document.addEventListener("DOMContentLoaded", async function () {
       if (res.ok) {
         messageDiv.textContent = "Item updated successfully!";
         messageDiv.style.color = "green";
+        setTimeout(() => {
+          window.location.href = "item-control.html";
+        }, 1000);
       } else {
         const err = await res.text();
         messageDiv.textContent = `Error: ${err}`;
